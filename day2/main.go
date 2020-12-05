@@ -42,11 +42,6 @@ func part2() {
 }
 
 func main() {
-
-	// 5-6 z: zzszzrmkplrzz
-	// fmt.Sprint(p.Value[p.IndexA])
-
-	// fmt.Print(string("zzszzrmkplrzz"[4]))
 	part1()
 	part2()
 }
