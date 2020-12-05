@@ -17,8 +17,7 @@ func parseInt(num string) int64 {
 	}
 }
 
-func main() {
-
+func part1() {
 	lines, err := readLines("input")
 	if err != nil {
 		log.Fatalf("readLines: %s", err)
@@ -32,12 +31,35 @@ func main() {
 
 		if diffIndex, ok := processed[num]; ok {
 			pair := parseInt(lines[diffIndex])
-			fmt.Println(pair * num)
+			fmt.Printf("part 1 answer: %s\n", fmt.Sprint(pair*num))
+			return
 		}
 
 		processed[2020-num] = i
 	}
+}
 
+func part2() {
+	lines, err := readLines("input")
+	if err != nil {
+		log.Fatalf("readLines: %s", err)
+	}
+
+	for _, int1Str := range lines {
+		for _, int2Str := range lines {
+			for _, int3Str := range lines {
+				if (parseInt(int1Str) + parseInt(int2Str) + parseInt(int3Str)) == 2020 {
+					fmt.Printf("part 2 answer: %s\n", fmt.Sprint(parseInt(int1Str)*parseInt(int2Str)*parseInt(int3Str)))
+					return
+				}
+			}
+		}
+	}
+}
+
+func main() {
+	part1()
+	part2()
 }
 
 func readLines(path string) ([]string, error) {
