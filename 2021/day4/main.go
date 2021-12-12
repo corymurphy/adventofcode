@@ -15,9 +15,11 @@ func main() {
 }
 
 func part1(input []string) int {
-	return 0
+	game := NewGame(input)
+	return game.PlayPart1()
 }
 
 func part2(input []string) int {
-	return 0
+	game := NewGame(input)
+	return game.PlayPart2()
 }
