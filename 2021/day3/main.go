@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	input := readInput()
+	input := readInput("input")
 
 	part1 := part1(input)
 	part2 := part2(input)
@@ -20,6 +20,7 @@ func part1(input []string) int {
 	return diagReport.PowerConsumption()
 }
 
-func part2(input []string) int32 {
-	return 0
+func part2(input []string) int {
+	diagReport := NewDiagnosticReport(input)
+	return diagReport.LifeSupportRating()
 }

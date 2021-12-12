@@ -21,8 +21,8 @@ func readLines(path string) ([]string, error) {
 	return lines, scanner.Err()
 }
 
-func readInput() []string {
-	lines, err := readLines("input")
+func readInput(path string) []string {
+	lines, err := readLines(path)
 	if err != nil {
 		log.Fatalf("readLines: %s", err)
 	}
