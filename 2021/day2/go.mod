@@ -1,3 +1,3 @@
-module corymurphy.adventofcode.com/day2
+module corymurphy.adventofcode.com/today
 
 go 1.17
