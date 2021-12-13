@@ -15,17 +15,14 @@ func main() {
 }
 
 func part1(input []string) int {
-	oceanMap := NewOceanMapPart1(input)
-	fmt.Println("")
-	oceanMap.ToString()
-	fmt.Println("")
-	return oceanMap.Part1()
+	// simulator := NewSimulator(input)
+	// simulator.Run()
+	// return simulator.LanternFishCount()
+	return 0
 }
 
 func part2(input []string) int {
-	oceanMap := NewOceanMapPart2(input)
-	fmt.Println("")
-	oceanMap.ToString()
-	fmt.Println("")
-	return oceanMap.Part2()
+	simulator := NewSimulator(input)
+	
+	return simulator.RunPart2()
 }
