@@ -18,9 +18,13 @@ const rock_bonus int = 1
 const paper_bonus int = 2
 const scissors_bonus int = 3
 
-const lose string = "X"
-const draw string = "Y"
-const win string = "Z"
+const should_lose string = "X"
+const should_draw string = "Y"
+const should_win string = "Z"
+
+const lose int = 0
+const draw int = 3
+const win int = 6
 
 func main() {
 	input := shared.ReadInput("input")

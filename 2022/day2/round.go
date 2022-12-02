@@ -9,6 +9,7 @@ type Round struct {
 	rock     map[string]int
 	paper    map[string]int
 	scissors map[string]int
+	part2    map[string]map[string]int
 }
 
 func NewRound(input string) *Round {
@@ -18,19 +19,36 @@ func NewRound(input string) *Round {
 		you:      plays[1],
 		expected: plays[1],
 		rock: map[string]int{
-			lose: 3,
-			win:  8,
-			draw: 4,
+			should_lose: 3,
+			should_win:  8,
+			should_draw: 4,
 		},
 		paper: map[string]int{
-			lose: 1,
-			win:  9,
-			draw: 5,
+			should_lose: 1,
+			should_win:  9,
+			should_draw: 5,
 		},
 		scissors: map[string]int{
-			lose: 2,
-			win:  7,
-			draw: 6,
+			should_lose: 2,
+			should_win:  7,
+			should_draw: 6,
+		},
+		part2: map[string]map[string]int{
+			rock: map[string]int{
+				should_lose: rock_bonus + lose,
+				should_win:  rock_bonus + win,
+				should_draw: rock_bonus + draw,
+			},
+			paper: map[string]int{
+				should_lose: paper_bonus + lose,
+				should_win:  paper_bonus + win,
+				should_draw: paper_bonus + draw,
+			},
+			scissors: map[string]int{
+				should_lose: scissors_bonus + lose,
+				should_win:  scissors_bonus + win,
+				should_draw: scissors_bonus + draw,
+			},
 		},
 	}
 }
@@ -71,4 +89,5 @@ func (r *Round) Play2() int {
 		return r.paper[r.expected]
 	}
 	return 0
+	// return r.part2[r.opponent][r.expected]
 }

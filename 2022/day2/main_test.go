@@ -26,3 +26,12 @@ func Test_Part2(t *testing.T) {
 		t.Errorf("expected %s, got %s", fmt.Sprint(expected), fmt.Sprint(actual))
 	}
 }
+
+func Test_Part2_Completed(t *testing.T) {
+	expected := 11756
+	input := shared.ReadInput("input")
+	actual := part2(input)
+	if expected != actual {
+		t.Errorf("expected %s, got %s", fmt.Sprint(expected), fmt.Sprint(actual))
+	}
+}
