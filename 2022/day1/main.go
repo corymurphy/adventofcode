@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"sort"
+
+	shared "github.com/corymurphy/adventofcode/shared"
 )
 
 func topThreeCarriedCalories(input []string) int {
@@ -42,7 +44,7 @@ func mostCarriedCalories(input []string) int {
 			continue
 		}
 
-		snackCalories := toInt(snack)
+		snackCalories := shared.ReadInput()
 
 		elf = elf + snackCalories
 
@@ -55,7 +57,7 @@ func mostCarriedCalories(input []string) int {
 }
 
 func main() {
-	input := ReadInput("input")
+	input := shared.ReadInput("input")
 	fmt.Println(mostCarriedCalories(input))
 	fmt.Println(topThreeCarriedCalories(input))
 }
