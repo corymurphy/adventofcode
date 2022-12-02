@@ -19,7 +19,7 @@ func topThreeCarriedCalories(input []string) int {
 			continue
 		}
 
-		snackCalories := shared.toInt(snack)
+		snackCalories := shared.ToInt(snack)
 
 		elf = elf + snackCalories
 	}
