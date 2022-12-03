@@ -51,3 +51,15 @@ Now that you're correctly decrypting the ultra top secret strategy guide, you wo
 
 Following the Elf's instructions for the second column, what would your total score be if everything goes exactly according to your strategy guide?
 
+## notes part 2
+
+
+rock + rock = 3 + 1
+rock + paper = 6 + 2
+rock + scissors = 0 + 3
+paper + rock = 0 + 1
+paper + paper = 3 + 2
+paper + scissors = 6 + 3
+scissors + rock = 6 + 1
+scissors + paper = 0 + 2
+scissors + scissors = 3 + 3
