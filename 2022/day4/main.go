@@ -33,7 +33,7 @@ func NewAssignmentPair(input string) *AssignmentPair {
 	}
 }
 
-func (a *AssignmentPair) Overlaps() bool {
+func (a *AssignmentPair) Contains() bool {
 	overlaps := false
 
 	if a.AssignmentA.Low >= a.AssignmentB.Low &&
@@ -47,7 +47,7 @@ func (a *AssignmentPair) Overlaps() bool {
 	return overlaps
 }
 
-func (a *AssignmentPair) OverlapsPart2() bool {
+func (a *AssignmentPair) Overlaps() bool {
 	overlaps := false
 
 	if a.AssignmentA.High >= a.AssignmentB.Low &&
@@ -78,7 +78,7 @@ func part1(input []string) int {
 	total := 0
 
 	for _, row := range input {
-		if NewAssignmentPair(row).Overlaps() {
+		if NewAssignmentPair(row).Contains() {
 			total++
 		}
 	}
@@ -89,7 +89,7 @@ func part1(input []string) int {
 func part2(input []string) int {
 	total := 0
 	for _, row := range input {
-		if NewAssignmentPair(row).OverlapsPart2() {
+		if NewAssignmentPair(row).Overlaps() {
 			total++
 		}
 	}
