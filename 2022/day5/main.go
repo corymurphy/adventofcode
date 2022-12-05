@@ -8,7 +8,7 @@ import (
 )
 
 type Dock struct {
-	Stacks   map[int]*CmStack
+	Stacks   map[int]*shared.Stack
 	Commands Commands
 }
 
@@ -16,14 +16,14 @@ func CountStacks(input string) int {
 	return len(strings.Fields(input))
 }
 
-func InitializeStacks(input []string) map[int]*CmStack {
+func InitializeStacks(input []string) map[int]*shared.Stack {
 
-	stacks := map[int]*CmStack{}
+	stacks := map[int]*shared.Stack{}
 
 	stackCount := CountStacks(input[len(input)-1])
 
 	for i := 1; i <= stackCount; i++ {
-		stacks[i] = NewStack()
+		stacks[i] = shared.NewStack()
 	}
 
 	for i := len(input) - 2; i >= 0; i-- {
@@ -69,7 +69,7 @@ func (d *Dock) Rearrange() {
 
 func (d *Dock) RearrangePart2() {
 	for _, command := range d.Commands {
-		staging := NewStack()
+		staging := shared.NewStack()
 
 		// this is lazy, i could improve the logic here
 		for i := 1; i <= command.Move; i++ {
