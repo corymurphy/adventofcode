@@ -38,13 +38,13 @@ func Test_Part1_Completed(t *testing.T) {
 	}
 }
 
-// func Test_Part2_Completed(t *testing.T) {
-// 	expected := 779
+func Test_Part2_Completed(t *testing.T) {
+	expected := "BNTZFPMMW"
 
-// 	input := shared.ReadInput("input")
+	input := shared.ReadInput("input")
 
-// 	actual := part2(input)
-// 	if expected != actual {
-// 		t.Errorf("expected %s, got %s", fmt.Sprint(expected), fmt.Sprint(actual))
-// 	}
-// }
+	actual := part2(input)
+	if expected != actual {
+		t.Errorf("expected %s, got %s", fmt.Sprint(expected), fmt.Sprint(actual))
+	}
+}
