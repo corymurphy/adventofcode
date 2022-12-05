@@ -7,60 +7,123 @@ import (
 	shared "github.com/corymurphy/adventofcode/shared"
 )
 
-type Assignment struct {
-	Low  int
-	High int
+type Dock struct {
+	Stacks   map[int]CmStack
+	Commands Commands
 }
 
-type AssignmentPair struct {
-	AssignmentA Assignment
-	AssignmentB Assignment
+func CountStacks(input string) int {
+	return len(strings.Fields(input))
 }
 
-func NewAssignment(input string) *Assignment {
-	assignment := strings.Split(input, "-")
-	return &Assignment{
-		Low:  shared.ToInt(assignment[0]),
-		High: shared.ToInt(assignment[1]),
+func InitializeStacks(input []string) map[int]CmStack {
+
+	stacks := map[int]CmStack{}
+
+	stackCount := CountStacks(input[len(input)-1])
+
+	for i := 1; i <= stackCount; i++ {
+		stacks[i] = *NewStack()
+	}
+
+	for i := len(input) - 2; i >= 0; i-- {
+
+		stackCounter := 1
+		for j := 1; j <= len(input[i]); j = j + 4 {
+
+			crate := string(input[i][j])
+			if crate != " " {
+				stack := stacks[stackCounter]
+				stack.Push(crate)
+				stacks[stackCounter] = stack
+			}
+			stackCounter++
+		}
+
+	}
+	return stacks
+}
+
+func (d *Dock) TopCrates() string {
+	result := ""
+	for i := 1; i <= len(d.Stacks); i++ {
+		stack := d.Stacks[i]
+		item, err := stack.Peek()
+		if err != nil || item != "" {
+			result = result + item
+		}
+	}
+	return result
+}
+
+func (d *Dock) Rearrange() {
+	for _, command := range d.Commands {
+		for i := 1; i <= command.Move; i++ {
+			from := command.From
+			to := command.To
+
+			fromStack := d.Stacks[from]
+			toStack := d.Stacks[to]
+
+			value, _ := fromStack.Pop()
+			toStack.Push(value)
+
+			d.Stacks[from] = fromStack
+			d.Stacks[to] = toStack
+		}
 	}
 }
 
-func NewAssignmentPair(input string) *AssignmentPair {
-	assignmentPair := strings.Split(input, ",")
-	return &AssignmentPair{
-		AssignmentA: *NewAssignment(assignmentPair[0]),
-		AssignmentB: *NewAssignment(assignmentPair[1]),
+func (d *Dock) RearrangePart2() {
+	for _, command := range d.Commands {
+		staging := NewStack()
+		for i := 1; i <= command.Move; i++ {
+			from := command.From
+			// to := command.To
+
+			fromStack := d.Stacks[from]
+			// toStack := d.Stacks[to]
+
+			value, _ := fromStack.Pop()
+			staging.Push(value)
+			// toStack.Push(value)
+
+			d.Stacks[from] = fromStack
+			// d.Stacks[to] = toStack
+		}
+
+		for i := 1; i <= command.Move; i++ {
+			to := command.To
+
+			toStack := d.Stacks[to]
+			// toStack := d.Stacks[to]
+
+			value, _ := staging.Pop()
+			// staging.Push(value)
+			toStack.Push(value)
+
+			// d.Stacks[from] = fromStack
+			d.Stacks[to] = toStack
+		}
 	}
 }
 
-func (a *AssignmentPair) Contains() bool {
-	overlaps := false
+func NewDock(input []string) *Dock {
 
-	if a.AssignmentA.Low >= a.AssignmentB.Low &&
-		a.AssignmentA.High <= a.AssignmentB.High {
-		overlaps = true
-	}
-	if a.AssignmentB.Low >= a.AssignmentA.Low &&
-		a.AssignmentB.High <= a.AssignmentA.High {
-		overlaps = true
-	}
-	return overlaps
-}
-
-func (a *AssignmentPair) Overlaps() bool {
-	overlaps := false
-
-	if a.AssignmentA.High >= a.AssignmentB.Low &&
-		a.AssignmentA.High <= a.AssignmentB.High {
-		return true
+	commandSeparatorIndex := 0
+	for i, row := range input {
+		if row == "" {
+			commandSeparatorIndex = i
+		}
 	}
 
-	if a.AssignmentB.High >= a.AssignmentA.Low &&
-		a.AssignmentB.High <= a.AssignmentA.High {
-		return true
-	}
+	stacks := input[0:commandSeparatorIndex]
+	commands := input[commandSeparatorIndex:]
 
-	return overlaps
+	return &Dock{
+		Stacks:   InitializeStacks(stacks),
+		Commands: *NewCommands(commands),
+	}
 }
 
 func main() {
@@ -74,13 +137,13 @@ func main() {
 }
 
 func part1(input []string) string {
-
-	total := ""
-
-	return total
+	dock := NewDock(input)
+	dock.Rearrange()
+	return dock.TopCrates()
 }
 
 func part2(input []string) string {
-	total := ""
-	return total
+	dock := NewDock(input)
+	dock.RearrangePart2()
+	return dock.TopCrates()
 }
