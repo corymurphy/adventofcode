@@ -1,3 +1,5 @@
+// Thank you to - https://towardsdev.com/implementing-stack-in-golang-30e4c4c9f941
+
 package shared
 
 import (
