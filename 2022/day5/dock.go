@@ -1,3 +1,10 @@
+package main
+
+import (
+	"strings"
+
+	"github.com/corymurphy/adventofcode/shared"
+)
 
 type Dock struct {
 	Stacks   map[int]*shared.Stack
