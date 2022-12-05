@@ -8,7 +8,7 @@ import (
 )
 
 type Dock struct {
-	Stacks   map[int]CmStack
+	Stacks   map[int]*CmStack
 	Commands Commands
 }
 
@@ -16,14 +16,14 @@ func CountStacks(input string) int {
 	return len(strings.Fields(input))
 }
 
-func InitializeStacks(input []string) map[int]CmStack {
+func InitializeStacks(input []string) map[int]*CmStack {
 
-	stacks := map[int]CmStack{}
+	stacks := map[int]*CmStack{}
 
 	stackCount := CountStacks(input[len(input)-1])
 
 	for i := 1; i <= stackCount; i++ {
-		stacks[i] = *NewStack()
+		stacks[i] = NewStack()
 	}
 
 	for i := len(input) - 2; i >= 0; i-- {
@@ -61,15 +61,8 @@ func (d *Dock) Rearrange() {
 		for i := 1; i <= command.Move; i++ {
 			from := command.From
 			to := command.To
-
-			fromStack := d.Stacks[from]
-			toStack := d.Stacks[to]
-
-			value, _ := fromStack.Pop()
-			toStack.Push(value)
-
-			d.Stacks[from] = fromStack
-			d.Stacks[to] = toStack
+			value, _ := d.Stacks[from].Pop()
+			d.Stacks[to].Push(value)
 		}
 	}
 }
@@ -77,33 +70,17 @@ func (d *Dock) Rearrange() {
 func (d *Dock) RearrangePart2() {
 	for _, command := range d.Commands {
 		staging := NewStack()
+
+		// this is lazy, i could improve the logic here
 		for i := 1; i <= command.Move; i++ {
-			from := command.From
-			// to := command.To
-
-			fromStack := d.Stacks[from]
-			// toStack := d.Stacks[to]
-
-			value, _ := fromStack.Pop()
+			value, _ := d.Stacks[command.From].Pop()
 			staging.Push(value)
-			// toStack.Push(value)
-
-			d.Stacks[from] = fromStack
-			// d.Stacks[to] = toStack
 		}
 
 		for i := 1; i <= command.Move; i++ {
 			to := command.To
-
-			toStack := d.Stacks[to]
-			// toStack := d.Stacks[to]
-
 			value, _ := staging.Pop()
-			// staging.Push(value)
-			toStack.Push(value)
-
-			// d.Stacks[from] = fromStack
-			d.Stacks[to] = toStack
+			d.Stacks[to].Push(value)
 		}
 	}
 }
