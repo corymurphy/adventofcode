@@ -24,10 +24,8 @@ func (d *Dock) TopCrates() string {
 func (d *Dock) Rearrange() {
 	for _, command := range d.Commands {
 		for i := 1; i <= command.Move; i++ {
-			from := command.From
-			to := command.To
-			value, _ := d.Stacks[from].Pop()
-			d.Stacks[to].Push(value)
+			value, _ := d.Stacks[command.From].Pop()
+			d.Stacks[command.To].Push(value)
 		}
 	}
 }
