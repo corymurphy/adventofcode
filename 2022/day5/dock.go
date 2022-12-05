@@ -54,6 +54,7 @@ func NewDock(input []string) *Dock {
 	for i, row := range input {
 		if row == "" {
 			commandSeparatorIndex = i
+			break
 		}
 	}
 
