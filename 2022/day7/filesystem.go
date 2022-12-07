@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/corymurphy/adventofcode/shared"
@@ -142,14 +140,4 @@ func (f *FileSystem) init(input []string) error {
 
 func isCommand(input string) bool {
 	return strings.HasPrefix(input, "$")
-}
-
-func PrettyPrint(v interface{}) (err error) {
-	b, err := json.MarshalIndent(v, "", "  ")
-	if err == nil {
-		fmt.Println(string(b))
-	} else {
-		fmt.Println(err)
-	}
-	return
 }
