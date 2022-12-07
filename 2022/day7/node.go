@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type Node struct {
 	Children map[string]*Node
 	Parent   map[string]*Node
@@ -24,6 +26,26 @@ func (n *Node) Size() int {
 	}
 }
 
-// func (n *Node) Append(node Node) {
-// 	n.Children[node.Name] = node
-// }
+func (n *Node) Print() {
+	if n.Type == File {
+		fmt.Printf("%s- %s (%s, size=%d)\n", newRepeatingString(n.Depth, " "), n.Name, n.Type.String(), n.size)
+	} else {
+		fmt.Printf("%s- %s (%s, size=%d)\n", newRepeatingString(n.Depth, " "), n.Name, n.Type.String(), n.Size())
+	}
+
+	for _, value := range n.Children {
+		value.Print()
+	}
+}
+
+func SumDirectories(node Node, sizeAtMost int, sum int) int {
+
+	if node.Type == Directory && node.Size() <= sizeAtMost {
+		sum = sum + node.Size()
+	}
+
+	for _, child := range node.Children {
+		sum = SumDirectories(*child, sizeAtMost, sum)
+	}
+	return sum
+}

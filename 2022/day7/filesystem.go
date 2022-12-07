@@ -33,32 +33,8 @@ func (f *FileSystem) Print() {
 	f.Root.Print()
 }
 
-func (n *Node) Print() {
-	if n.Type == File {
-		fmt.Printf("%s- %s (%s, size=%d)\n", newRepeatingString(n.Depth, " "), n.Name, n.Type.String(), n.size)
-	} else {
-		fmt.Printf("%s- %s (%s, size=%d)\n", newRepeatingString(n.Depth, " "), n.Name, n.Type.String(), n.Size())
-	}
-
-	for _, value := range n.Children {
-		value.Print()
-	}
-}
-
 func (f *FileSystem) SumDirectories(sizeAtMost int) int {
 	return SumDirectories(*f.Root, sizeAtMost, 0)
-}
-
-func SumDirectories(node Node, sizeAtMost int, sum int) int {
-
-	if node.Type == Directory && node.Size() <= sizeAtMost {
-		sum = sum + node.Size()
-	}
-
-	for _, child := range node.Children {
-		sum = SumDirectories(*child, sizeAtMost, sum)
-	}
-	return sum
 }
 
 func (f *FileSystem) ProcessCommand(line string, input []string, index int) int {
