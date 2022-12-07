@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"strings"
 
 	"github.com/corymurphy/adventofcode/shared"
@@ -31,6 +32,15 @@ func (f *FileSystem) Print() {
 	f.Root.Print()
 }
 
+func (f *FileSystem) TotalSize() int {
+	return f.Root.Size()
+}
+
+// func (f *FileSystem) Print2() {
+// 	f.ChangeDirectory([]string{".."})
+// 	f.Root.Print
+// }
+
 func (f *FileSystem) SumDirectories(sizeAtMost int) int {
 	return SumDirectories(*f.Root, sizeAtMost, 0)
 }
@@ -46,6 +56,10 @@ func (f *FileSystem) ProcessCommand(line string, input []string, index int) int 
 		return f.ListDirectory(args[2:], input, index)
 	}
 	return 0
+}
+
+func (f *FileSystem) GetCleanableDirectory(spaceNeeded int) int {
+	return GetCleanableDirectory(*f.Root, spaceNeeded, math.MaxInt)
 }
 
 func (f *FileSystem) ChangeDirectory(args []string) {
@@ -128,13 +142,8 @@ func (f *FileSystem) init(input []string) error {
 		if isCommand(line) {
 			advanceIndex := f.ProcessCommand(line, input, i)
 			i = i + advanceIndex
-		} else {
-			// fmt.Println(line)
 		}
 	}
-
-	// PrettyPrint(f.Root)
-
 	return nil
 }
 

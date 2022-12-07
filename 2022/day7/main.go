@@ -18,10 +18,12 @@ func main() {
 
 func part1(input []string) int {
 	fs := NewFileSystem(input)
-	fs.Print()
 	return fs.SumDirectories(100000)
 }
 
 func part2(input []string) int {
-	return 0
+	fs := NewFileSystem(input)
+	available := 70000000 - fs.TotalSize()
+	spaceNeeded := 30000000 - available
+	return fs.GetCleanableDirectory(spaceNeeded)
 }
