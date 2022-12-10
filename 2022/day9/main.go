@@ -88,14 +88,22 @@ func GetBridgeSize(input []string) int {
 
 }
 
-func SimulateBridge(input []string, grid [][]int) [][]int {
+func setStartVisited(grid *[][]int, coor *Coordinates) {
+	(*grid)[coor.Y][coor.X] = 1
+}
+
+func SimulateBridge(input []string, grid [][]int, tailCount int) [][]int {
 
 	head := NewCoordinates()
-	tail := NewCoordinates()
+	// tail := NewCoordinates()
+	tails := NewCoordinatesList(tailCount)
 
+	coordinates := NewCoordinatesList(tailCount + 1)
+
+	setStartVisited(&grid, coordinates[0])
 	for _, item := range input {
 		instruction := NewInstruction(item)
-		Move(&grid, instruction, head, tail)
+		MoveTails(&grid, instruction, head, tails)
 	}
 
 	return grid
@@ -113,28 +121,27 @@ func CountVisited(grid [][]int) int {
 	return visited
 }
 
-func SimulateBridgeTails(input []string, grid [][]int, tailCount int) [][]int {
+// func SimulateBridgeTails(input []string, grid [][]int) [][]int {
 
-	head := NewCoordinates()
-	// tail := NewCoordinates()
-	tails := NewCoordinatesList(tailCount)
+// 	head := NewCoordinates()
+// 	tails := NewCoordinatesList()
 
-	for _, item := range input {
-		instruction := NewInstruction(item)
-		MoveDynamic(&grid, instruction, head, tails)
-	}
+// 	for _, item := range input {
+// 		instruction := NewInstruction(item)
+// 		MoveTails(&grid, instruction, head, tails)
+// 	}
 
-	return grid
-}
+// 	return grid
+// }
 
 func part1(input []string) int {
 	grid := NewGrid(GetBridgeSize(input) * 20)
-	grid = SimulateBridge(input, grid)
+	grid = SimulateBridge(input, grid, 1)
 	return CountVisited(grid)
 }
 
 func part2(input []string) int {
 	grid := NewGrid(GetBridgeSize(input) * 20)
-	grid = SimulateBridgeTails(input, grid, 9)
+	// grid = SimulateBridgeTails(input, grid, tails)
 	return CountVisited(grid)
 }
