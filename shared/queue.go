@@ -7,6 +7,12 @@ import (
 
 // TODO: this should allow arbitrary types, but ok for now
 
+func NewIntQueue() *IntQueue {
+	return &IntQueue{
+		queue: list.New(),
+	}
+}
+
 type IntQueue struct {
 	queue *list.List
 }
