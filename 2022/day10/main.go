@@ -6,6 +6,10 @@ import (
 	shared "github.com/corymurphy/adventofcode/shared"
 )
 
+// const (
+// 	significantCycles = []int{20}
+// )
+
 func main() {
 	input := shared.ReadInput("input")
 
@@ -17,7 +21,9 @@ func main() {
 }
 
 func part1(input []string) int {
-	return 0
+	program := NewProgram(input)
+	cpu := NewCpu()
+	return cpu.Execute(program)
 }
 
 func part2(input []string) int {
