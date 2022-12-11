@@ -7,6 +7,7 @@ import (
 )
 
 type Monkey struct {
+	Id             int
 	Inspected      int
 	Items          *shared.IntQueue
 	ThrowTest      int
@@ -21,8 +22,7 @@ func (m *Monkey) ItemsToString() string {
 	item, err := m.Items.Dequeue()
 	items := ""
 
-	fmt.Println(err)
-	for err != nil {
+	for err == nil {
 		if items == "" {
 			items = fmt.Sprint(item)
 		} else {

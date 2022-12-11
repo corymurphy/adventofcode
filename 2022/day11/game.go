@@ -2,18 +2,22 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/corymurphy/adventofcode/shared"
 )
 
 type Game struct {
-	Monkeys []*Monkey
+	Monkeys         []*Monkey
+	WorryManagement int
 }
 
 func parseInput(input []string) []*Monkey {
 
 	monkeys := []*Monkey{}
+
+	id := 0
 
 	for i, line := range input {
 
@@ -24,12 +28,14 @@ func parseInput(input []string) []*Monkey {
 				Inspected:      0,
 				WorryModifier:  mod,
 				WorryOperation: op,
-				ThrowTest:      parseThrowTest(input[3]),
-				IfTrue:         parseIfTrue(input[4]),
-				IfFalse:        parseIfFalse(input[5]),
+				ThrowTest:      parseThrowTest(input[i+3]),
+				IfTrue:         parseIfTrue(input[i+4]),
+				IfFalse:        parseIfFalse(input[i+5]),
+				Id:             id,
 			}
 
 			monkeys = append(monkeys, &monkey)
+			id++
 		}
 	}
 	return monkeys
@@ -80,14 +86,99 @@ func parseStartingItems(input string) *shared.IntQueue {
 	return queue
 }
 
-func NewGame(input []string) *Game {
+func NewGame(input []string, worryManagement int) *Game {
 	return &Game{
-		Monkeys: parseInput(input),
+		Monkeys:         parseInput(input),
+		WorryManagement: worryManagement,
 	}
 }
 
 func (g *Game) Print() {
 	for i, monkey := range g.Monkeys {
-		fmt.Printf("monkey %d starting items %s\n", i, monkey.ItemsToString())
+		fmt.Printf("monkey %d items %s\n", i, monkey.ItemsToString())
 	}
+}
+
+func (g *Game) PlayRound(round int) {
+
+	// fmt.Printf("starting round %d\n", round)
+	for _, monkey := range g.Monkeys {
+		g.TakeTurn(monkey)
+	}
+}
+
+func (g *Game) TakeTurn(monkey *Monkey) {
+	item, err := monkey.Items.Dequeue()
+
+	i := 0
+	for err == nil {
+
+		monkey.Inspected = monkey.Inspected + 1
+
+		if monkey.WorryOperation == Multiply {
+			item = item * monkey.WorryModifier
+		} else if monkey.WorryOperation == Add {
+			item = item + monkey.WorryModifier
+		} else if monkey.WorryOperation == Square {
+			item = item * item
+		}
+
+		item = g.ManageWorry(item, monkey)
+
+		throwTo := -1
+		if item%monkey.ThrowTest == 0 {
+			throwTo = monkey.IfTrue
+		} else {
+			throwTo = monkey.IfFalse
+		}
+
+		// fmt.Printf("throwing %d to %d\n", item, throwTo)
+
+		g.Monkeys[throwTo].Items.Enqueue(item)
+
+		item, err = monkey.Items.Dequeue()
+
+		i++
+		if i == 999 {
+			panic("we're iterating wayyyy too many times") // hack lol
+		}
+
+	}
+}
+
+func (g *Game) Play(rounds int) int {
+	for i := 1; i <= rounds; i++ {
+		g.PlayRound(i)
+
+		if i%1000 == 0 {
+			results := []int{}
+			for _, monkey := range g.Monkeys {
+				results = append(results, monkey.Inspected)
+			}
+			sort.Ints(results)
+			fmt.Println(results)
+		}
+	}
+
+	results := []int{}
+	for _, monkey := range g.Monkeys {
+		results = append(results, monkey.Inspected)
+	}
+	sort.Ints(results)
+
+	return results[len(results)-1] * results[len(results)-2]
+}
+
+func (g *Game) Supermod() int {
+	mod := 1
+	for _, monkey := range g.Monkeys {
+		mod = mod * monkey.ThrowTest
+	}
+	return mod
+}
+func (g *Game) ManageWorry(initial int, monkey *Monkey) int {
+	if g.WorryManagement == 3 {
+		return initial / g.WorryManagement
+	}
+	return initial % g.Supermod()
 }
