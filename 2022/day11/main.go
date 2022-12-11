@@ -17,7 +17,8 @@ func main() {
 }
 
 func part1(input []string) int {
-
+	game := NewGame(input)
+	game.Print()
 	return 0
 }
 

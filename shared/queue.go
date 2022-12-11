@@ -23,7 +23,9 @@ func (q *IntQueue) Enqueue(value int) {
 
 func (q *IntQueue) Dequeue() (int, error) {
 	if q.queue.Len() > 0 {
-		if val, ok := q.queue.Front().Value.(int); ok {
+		element := q.queue.Front()
+		if val, ok := element.Value.(int); ok {
+			q.queue.Remove(element)
 			return val, nil
 		}
 		return 0, fmt.Errorf("error: datatype incorrect while dequeuing")
