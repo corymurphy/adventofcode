@@ -21,22 +21,24 @@ func (q *IntQueue) Enqueue(value int) {
 	q.queue.PushBack(value)
 }
 
-func (q *IntQueue) Dequeue() error {
-	if q.queue.Len() > 0 {
-		ele := q.queue.Front()
-		q.queue.Remove(ele)
-	}
-	return fmt.Errorf("Pop Error: Queue is empty")
-}
-
-func (q *IntQueue) Front() (int, error) {
+func (q *IntQueue) Dequeue() (int, error) {
 	if q.queue.Len() > 0 {
 		if val, ok := q.queue.Front().Value.(int); ok {
 			return val, nil
 		}
-		return 0, fmt.Errorf("Peep Error: Queue Datatype is incorrect")
+		return 0, fmt.Errorf("error: datatype incorrect while dequeuing")
 	}
-	return 0, fmt.Errorf("Peep Error: Queue is empty")
+	return 0, fmt.Errorf("error: empty queue")
+}
+
+func (q *IntQueue) Peek() (int, error) {
+	if q.queue.Len() > 0 {
+		if val, ok := q.queue.Front().Value.(int); ok {
+			return val, nil
+		}
+		return 0, fmt.Errorf("error: datatype incorrect while peeking")
+	}
+	return 0, fmt.Errorf("error: empty queue")
 }
 
 func (q *IntQueue) Size() int {
