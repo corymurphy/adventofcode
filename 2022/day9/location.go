@@ -29,5 +29,23 @@ func isAdjacent(head *Coordinates, tail *Coordinates) bool {
 	xDiff := head.X - tail.X
 	yDiff := head.Y - tail.Y
 
-	return xDiff <= 1 && xDiff >= -1 && yDiff <= 1 && yDiff >= -1
+	return isLessThanEqualOne(xDiff) && isLessThanEqualOne(yDiff)
+}
+
+func isLessThanEqualOne(value int) bool {
+	return value <= 1 && value >= -1
+}
+
+func isAdjacentVertical(head *Coordinates, tail *Coordinates) bool {
+	return isLessThanEqualOne(head.Y - tail.Y)
+}
+
+func isAdjacentHorizontal(head *Coordinates, tail *Coordinates) bool {
+	return isLessThanEqualOne(head.X - tail.Y)
+}
+
+func isAdjacentAngular(head *Coordinates, tail *Coordinates) bool {
+	return isAdjacent(head, tail) &&
+		!isAdjacentHorizontal(head, tail) &&
+		!isAdjacentVertical(head, tail)
 }

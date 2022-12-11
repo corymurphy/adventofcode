@@ -12,26 +12,80 @@ func NewCoordinates() *Coordinates {
 	}
 }
 
-func (c *Coordinates) Follow(leader *Coordinates, direction Direction) {
+func (follower *Coordinates) Follow(leader *Coordinates, direction Direction) {
 	if direction == Right {
-		c.X = leader.X - 1
-		c.Y = leader.Y
+		follower.X = leader.X - 1
+		// follower.X = follower.X - 1
+
+		// if is leader above
+		if leader.Y > follower.Y {
+			follower.Y = follower.Y + 1
+			// return Up
+		}
+
+		// if is leader below
+		if leader.Y < follower.Y {
+			follower.Y = follower.Y - 1
+			// return Down
+		}
+		// return Right
 	}
 
 	if direction == Left {
-		c.X = leader.X + 1
-		c.Y = leader.Y
+		follower.X = leader.X + 1
+		// follower.X = follower.X + 1
+
+		// if is leader above
+		if leader.Y > follower.Y {
+			follower.Y = follower.Y + 1
+			// return Up
+		}
+
+		// if is leader below
+		if leader.Y < follower.Y {
+			follower.Y = follower.Y - 1
+			// return Down
+		}
 	}
 
 	if direction == Up {
-		c.Y = leader.Y - 1
-		c.X = leader.X
+		follower.Y = leader.Y - 1
+		// follower.Y = follower.Y - 1
+
+		// if is leader left
+		if leader.X > follower.X {
+			follower.X = follower.X + 1
+			// return Left
+		}
+
+		// if leader is right
+		if leader.X < follower.X {
+			follower.X = follower.X - 1
+			// return Right
+		}
+
 	}
 
 	if direction == Down {
-		c.Y = leader.Y + 1
-		c.X = leader.X
+		follower.Y = leader.Y + 1
+		// follower.Y = follower.Y + 1
+		// follower.X = leader.X
+
+		// if is leader left
+		if leader.X > follower.X {
+			follower.X = follower.X + 1
+			// return Left
+		}
+
+		// if leader is right
+		if leader.X < follower.X {
+			follower.X = follower.X - 1
+			// return Right
+		}
+
 	}
+
+	// return direction
 }
 
 func (c *Coordinates) Move(direction Direction) {

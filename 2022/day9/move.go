@@ -1,52 +1,49 @@
 package main
 
-func Move(grid *[][]int, instruction Instruction, head *Coordinates, tail *Coordinates) {
+import "fmt"
 
-	for i := 0; i < instruction.Distance; i++ {
+func Move(grid *[][]int, instruction Instruction, rope *[]*Coordinates) {
 
-		if isSamePosition(head, tail) {
-			head.Move(instruction.Direction)
-			continue
-		}
+	// fmt.Printf("move %s %d\n", instruction.Direction.String(), instruction.Distance)
+	for moveCount := 0; moveCount < instruction.Distance; moveCount++ {
 
-		head.Move(instruction.Direction)
+		// fmt.Printf("movecount: %d\n", moveCount)
+		// direction := instruction.Direction
 
-		if isSamePosition(head, tail) {
-			(*grid)[tail.Y][tail.X] = 1
-			continue
-		}
+		for i := 1; i < len((*rope)); i++ {
+			head := (*rope)[i-1]
+			tail := (*rope)[i]
 
-		if !isAdjacent(head, tail) {
-			tail.Follow(head, instruction.Direction)
-		}
-		(*grid)[tail.Y][tail.X] = 1
+			if i == 1 {
+				if isSamePosition(head, tail) {
+					head.Move(instruction.Direction)
+					// if (*grid)[tail.Y][tail.X] != 1 {
+					// 	(*grid)[head.Y][head.X] = -1
+					// }
+					continue
+				}
 
-	}
-}
+				head.Move(instruction.Direction)
+				// if (*grid)[tail.Y][tail.X] != 1 {
+				// 	(*grid)[head.Y][head.X] = -1
+				// }
+			}
 
-func MoveTails(grid *[][]int, instruction Instruction, head *Coordinates, tails []*Coordinates) {
-
-	for i := 0; i < instruction.Distance; i++ {
-
-		if isSamePosition(head, tails[0]) {
-			head.Move(instruction.Direction)
-			continue
-		}
-
-		head.Move(instruction.Direction)
-
-		for i, tail := range tails {
 			if isSamePosition(head, tail) {
-				if i == len(tails)-1 {
+				if i == len((*rope))-1 {
 					(*grid)[tail.Y][tail.X] = 1
 				}
 				continue
 			}
 
 			if !isAdjacent(head, tail) {
+				// fmt.Printf("move %s %d\n", instruction.Direction.String(), instruction.Distance)
+
+				fmt.Printf("move %s, head x: %d, head y: %d, tail # %d x: %d, tail y: %d\n", instruction.Direction.String(), head.X, head.Y, i, tail.X, tail.Y)
 				tail.Follow(head, instruction.Direction)
 			}
-			if i == len(tails)-1 {
+
+			if i == len((*rope))-1 {
 				(*grid)[tail.Y][tail.X] = 1
 			}
 		}

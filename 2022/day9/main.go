@@ -62,6 +62,8 @@ func PrintGridBackwards(grid [][]int) {
 		for j := 0; j < len(grid[i]); j++ {
 			if grid[i][j] >= 1 {
 				fmt.Printf("%s", "#")
+			} else if grid[i][j] <= -1 {
+				fmt.Printf("%s", "H")
 			} else {
 				fmt.Printf("%s", ".")
 			}
@@ -92,23 +94,6 @@ func setStartVisited(grid *[][]int, coor *Coordinates) {
 	(*grid)[coor.Y][coor.X] = 1
 }
 
-func SimulateBridge(input []string, grid [][]int, tailCount int) [][]int {
-
-	head := NewCoordinates()
-	// tail := NewCoordinates()
-	tails := NewCoordinatesList(tailCount)
-
-	coordinates := NewCoordinatesList(tailCount + 1)
-
-	setStartVisited(&grid, coordinates[0])
-	for _, item := range input {
-		instruction := NewInstruction(item)
-		MoveTails(&grid, instruction, head, tails)
-	}
-
-	return grid
-}
-
 func CountVisited(grid [][]int) int {
 	visited := 0
 	for _, col := range grid {
@@ -121,18 +106,19 @@ func CountVisited(grid [][]int) int {
 	return visited
 }
 
-// func SimulateBridgeTails(input []string, grid [][]int) [][]int {
+func SimulateBridge(input []string, grid [][]int, tailCount int) [][]int {
 
-// 	head := NewCoordinates()
-// 	tails := NewCoordinatesList()
+	rope := NewCoordinatesList(tailCount + 1)
 
-// 	for _, item := range input {
-// 		instruction := NewInstruction(item)
-// 		MoveTails(&grid, instruction, head, tails)
-// 	}
+	setStartVisited(&grid, rope[0])
 
-// 	return grid
-// }
+	for _, item := range input {
+		instruction := NewInstruction(item)
+		Move(&grid, instruction, &rope)
+	}
+
+	return grid
+}
 
 func part1(input []string) int {
 	grid := NewGrid(GetBridgeSize(input) * 20)
@@ -142,6 +128,6 @@ func part1(input []string) int {
 
 func part2(input []string) int {
 	grid := NewGrid(GetBridgeSize(input) * 20)
-	// grid = SimulateBridgeTails(input, grid, tails)
+	grid = SimulateBridge(input, grid, 9)
 	return CountVisited(grid)
 }
