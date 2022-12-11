@@ -1,4 +1,4 @@
-module github.com/corymurphy/adventofcode/2022/day9
+module github.com/corymurphy/adventofcode/2022/day10
 
 go 1.19
 
