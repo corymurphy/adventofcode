@@ -1,15 +1,15 @@
 package main
 
-import "fmt"
-
 func Move(grid *[][]int, instruction Instruction, rope *[]*Coordinates) {
 
 	// fmt.Printf("move %s %d\n", instruction.Direction.String(), instruction.Distance)
+
 	for moveCount := 0; moveCount < instruction.Distance; moveCount++ {
 
 		// fmt.Printf("movecount: %d\n", moveCount)
 		// direction := instruction.Direction
 
+		direction := instruction.Direction
 		for i := 1; i < len((*rope)); i++ {
 			head := (*rope)[i-1]
 			tail := (*rope)[i]
@@ -39,8 +39,8 @@ func Move(grid *[][]int, instruction Instruction, rope *[]*Coordinates) {
 			if !isAdjacent(head, tail) {
 				// fmt.Printf("move %s %d\n", instruction.Direction.String(), instruction.Distance)
 
-				fmt.Printf("move %s, head x: %d, head y: %d, tail # %d x: %d, tail y: %d\n", instruction.Direction.String(), head.X, head.Y, i, tail.X, tail.Y)
-				tail.Follow(head, instruction.Direction)
+				// fmt.Printf("move %s, head x: %d, head y: %d, tail # %d x: %d, tail y: %d\n", instruction.Direction.String(), head.X, head.Y, i, tail.X, tail.Y)
+				tail.Follow(head, direction, i)
 			}
 
 			if i == len((*rope))-1 {

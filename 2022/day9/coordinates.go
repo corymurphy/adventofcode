@@ -12,9 +12,16 @@ func NewCoordinates() *Coordinates {
 	}
 }
 
-func (follower *Coordinates) Follow(leader *Coordinates, direction Direction) {
+func (follower *Coordinates) Follow(leader *Coordinates, direction Direction, id int) {
 	if direction == Right {
-		follower.X = leader.X - 1
+
+		if id == 1 {
+			follower.X = leader.X - 1
+		} else {
+			follower.X = follower.X + 1
+		}
+
+		// follower.X = leader.X - 1
 		// follower.X = follower.X - 1
 
 		// if is leader above
@@ -32,7 +39,13 @@ func (follower *Coordinates) Follow(leader *Coordinates, direction Direction) {
 	}
 
 	if direction == Left {
-		follower.X = leader.X + 1
+
+		if id == 1 {
+			follower.X = leader.X + 1
+		} else {
+			follower.X = follower.X - 1
+		}
+
 		// follower.X = follower.X + 1
 
 		// if is leader above
@@ -49,7 +62,13 @@ func (follower *Coordinates) Follow(leader *Coordinates, direction Direction) {
 	}
 
 	if direction == Up {
-		follower.Y = leader.Y - 1
+
+		if id == 1 {
+			follower.Y = leader.Y - 1
+		} else {
+			follower.Y = follower.Y + 1
+		}
+
 		// follower.Y = follower.Y - 1
 
 		// if is leader left
@@ -67,7 +86,14 @@ func (follower *Coordinates) Follow(leader *Coordinates, direction Direction) {
 	}
 
 	if direction == Down {
-		follower.Y = leader.Y + 1
+
+		if id == 1 {
+			follower.Y = leader.Y + 1
+		} else {
+			follower.Y = follower.Y - 1
+		}
+
+		// follower.Y = leader.Y + 1
 		// follower.Y = follower.Y + 1
 		// follower.X = leader.X
 
