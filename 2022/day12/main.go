@@ -16,34 +16,19 @@ func main() {
 	fmt.Printf("\nPart 2 answer: %d\n\n", part2)
 }
 
-func play1(input []string) {
-	heightMap := NewHeightMap(input)
-	visitedMap := NewVisitedMap(input)
-	fmt.Println(heightMap)
-	fmt.Println(visitedMap)
-
-	loc := NewCoordinates(5, 6)
-
-	visited := map[Vector]bool{
-		*loc:                  true,
-		*NewCoordinates(7, 8): true,
-	}
-
-	fmt.Println(visited)
-
-	newLoc := NewCoordinates(5, 6)
-
-	val := visited[*newLoc]
-
-	fmt.Println(val)
-}
-
+// don't look, this is hacky
 func part1(input []string) int {
-	play1(input)
-	return 0
+	navigator := NewNavigator(input)
+
+	// fmt.Println("starting shortest search")
+	// navigator.DrawVisited()
+	return navigator.Shortest()
 }
 
 func part2(input []string) int {
+	// navigator := NewNavigator(input)
+	AllShortest(input)
+	// fmt.println()
 	return 0
 }
 
@@ -78,7 +63,7 @@ func NewTerritoryMap(input []string) Map {
 		}
 	}
 
-	return &heightmap
+	return heightmap
 }
 
 func NewHeightMap(input []string) *Map {

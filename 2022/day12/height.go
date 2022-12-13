@@ -31,7 +31,7 @@ var Height map[string]int = map[string]int{
 	"B": 28,
 	"C": 29,
 	"D": 30,
-	"E": 31,
+	// "E": 31,
 	"F": 32,
 	"G": 33,
 	"H": 34,
@@ -53,4 +53,5 @@ var Height map[string]int = map[string]int{
 	"X": 50,
 	"Y": 51,
 	"Z": 26,
+	"E": 26,
 }
