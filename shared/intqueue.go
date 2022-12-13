@@ -7,21 +7,21 @@ import (
 
 // TODO: this should allow arbitrary types, but ok for now
 
-func NewQueue() *Queue {
-	return &Queue{
+func NewIntQueue() *IntQueue {
+	return &IntQueue{
 		queue: list.New(),
 	}
 }
 
-type Queue struct {
+type IntQueue struct {
 	queue *list.List
 }
 
-func (q *Queue) Enqueue(value interface{}) {
+func (q *IntQueue) Enqueue(value int) {
 	q.queue.PushBack(value)
 }
 
-func (q *Queue) Dequeue() (interface{}, error) {
+func (q *IntQueue) Dequeue() (int, error) {
 	if q.queue.Len() > 0 {
 		element := q.queue.Front()
 		if val, ok := element.Value.(int); ok {
@@ -33,22 +33,20 @@ func (q *Queue) Dequeue() (interface{}, error) {
 	return 0, fmt.Errorf("error: empty queue")
 }
 
-func (q *Queue) Peek() (interface{}, error) {
+func (q *IntQueue) Peek() (int, error) {
 	if q.queue.Len() > 0 {
-
-		return q.queue.Front()
-		// if val, ok := q.queue.Front().Value.(int); ok {
-		// 	return val, nil
-		// }
-		// return 0, fmt.Errorf("error: datatype incorrect while peeking")
+		if val, ok := q.queue.Front().Value.(int); ok {
+			return val, nil
+		}
+		return 0, fmt.Errorf("error: datatype incorrect while peeking")
 	}
 	return 0, fmt.Errorf("error: empty queue")
 }
 
-func (q *Queue) Size() int {
+func (q *IntQueue) Size() int {
 	return q.queue.Len()
 }
 
-func (q *Queue) Empty() bool {
+func (q *IntQueue) Empty() bool {
 	return q.queue.Len() == 0
 }
