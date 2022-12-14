@@ -4,7 +4,7 @@ import "fmt"
 
 type Cave struct {
 	Rocks  []*RockStructure
-	Graph  [][]string
+	Graph  *Graph
 	Limits Limits
 }
 
@@ -38,7 +38,7 @@ func (c *Cave) PlotRocks() {
 	for _, rock := range c.Rocks {
 		for i, v := range rock.Vectors {
 
-			c.Graph[v.Y][v.X] = "#"
+			(*c.Graph)[v.Y][v.X] = "#"
 
 			if i > 0 {
 				prev := rock.Vectors[i-1]
@@ -56,31 +56,51 @@ func (c *Cave) Draw() {
 	for y := c.Limits.MinY(); y <= c.Limits.maxY; y++ {
 		fmt.Println("")
 		for x := c.Limits.MinX(); x <= c.Limits.maxX; x++ {
-			fmt.Printf("%s", c.Graph[y][x])
+			fmt.Printf("%s", (*c.Graph)[y][x])
 		}
 	}
 }
 
-func (c *Cave) StartSand(start *Vector) int {
-	c.Graph[start.Y][start.X] = "+"
-	c.Limits.Analyze([]*Vector{start})
-	c.Draw()
-
-	return 0
+func (c *Cave) InAbyss(v Vector) bool {
+	return c.Limits.maxY <= v.Y
 }
 
-func NewGraph(limits *Limits) [][]string {
+func (c *Cave) StartSand(start *Vector) int {
+	(*c.Graph)[start.Y][start.X] = "+"
+	c.Limits.Analyze([]*Vector{start})
+	// c.Draw()
 
-	graph := [][]string{}
+	last := NewVector(start.X, start.Y)
+	sands := 1
+	for !c.InAbyss(*last) {
+		// if sands > 1000 {
+		// 	break
+		// }
+		sands++
+		sand := NewSand(start, c.Graph)
+		sand.Drop()
+		last = NewVector(sand.finish.X, sand.finish.Y)
+	}
+
+	c.Draw()
+
+	fmt.Println(c.Limits.maxY)
+	// fmt.Println(sands)
+	return sands
+}
+
+func NewGraph(limits *Limits) *Graph {
+
+	graph := Graph{}
 
 	for y := 0; y <= limits.maxX; y++ {
 		row := []string{}
 		for x := 0; x <= limits.maxX; x++ {
 			row = append(row, ".")
 		}
-		graph = append(graph, row)
+		graph = append((graph), row)
 	}
-	return graph
+	return &graph
 }
 
 func (c *Cave) PlotRockLine(start *Vector, finish *Vector) {
@@ -93,11 +113,11 @@ func (c *Cave) PlotRockLine(start *Vector, finish *Vector) {
 
 		if yDiff < 0 { // do down
 			for y := start.Y; y < finish.Y; y++ {
-				c.Graph[y][start.X] = "#"
+				(*c.Graph)[y][start.X] = "#"
 			}
 		} else { // go up
 			for y := start.Y; y < finish.Y; y-- {
-				c.Graph[y][start.X] = "#"
+				(*c.Graph)[y][start.X] = "#"
 			}
 		}
 
@@ -108,12 +128,20 @@ func (c *Cave) PlotRockLine(start *Vector, finish *Vector) {
 	if xDiff != 0 {
 		if xDiff < 0 { // go left
 			for x := start.X; x < finish.X; x++ {
-				c.Graph[start.Y][x] = "#"
+				(*c.Graph)[start.Y][x] = "#"
 			}
 		} else { // go right
 			for x := start.X; x > finish.X; x-- {
-				c.Graph[start.Y][x] = "#"
+				(*c.Graph)[start.Y][x] = "#"
 			}
 		}
 	}
 }
+
+func isRock(input string) bool {
+	return input == "#"
+}
+
+// func isBlocked(input string) bool {
+
+// }
