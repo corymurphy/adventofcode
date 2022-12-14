@@ -11,10 +11,8 @@ type Limits struct {
 
 func NewLimits() *Limits {
 	return &Limits{
-		maxX: 0,
-		maxY: 0,
-		// minX:  0,
-		// minY:  0,
+		maxX:  0,
+		maxY:  0,
 		xMins: []int{},
 		yMins: []int{},
 	}
