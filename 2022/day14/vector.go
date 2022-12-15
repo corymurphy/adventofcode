@@ -6,6 +6,10 @@ import (
 	"github.com/corymurphy/adventofcode/shared"
 )
 
+const (
+	mod int = 0
+)
+
 type Vector struct {
 	X int
 	Y int
@@ -13,7 +17,7 @@ type Vector struct {
 
 func NewVector(x int, y int) *Vector {
 	return &Vector{
-		X: x,
+		X: x + mod,
 		Y: y,
 	}
 }
