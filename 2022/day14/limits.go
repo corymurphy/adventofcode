@@ -22,11 +22,11 @@ func (l *Limits) Analyze(vectors []*Vector) {
 
 	for _, vector := range vectors {
 		if vector.X > l.maxX {
-			l.maxX = vector.X + 2
+			l.maxX = vector.X
 		}
 
 		if vector.Y > l.maxY {
-			l.maxY = vector.Y + 2
+			l.maxY = vector.Y
 		}
 
 		l.xMins = append(l.xMins, vector.X)

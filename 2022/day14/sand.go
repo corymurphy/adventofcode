@@ -23,7 +23,7 @@ func (s *Sand) Drop() {
 
 		// if bottom of graph
 
-		if s.current.Y+1 >= len(*s.graph) {
+		if s.current.Y >= len(*s.graph) {
 			finished = true
 		}
 
@@ -34,16 +34,16 @@ func (s *Sand) Drop() {
 		}
 
 		// try left
-		if !s.graph.IsBlocked(*NewVector(s.current.X-1, s.current.Y)) &&
-			!s.graph.IsBlocked(*NewVector(s.current.X-1, s.current.Y+1)) {
+		// if !s.graph.IsBlocked(*NewVector(s.current.X-1, s.current.Y)) &&
+		if !s.graph.IsBlocked(*NewVector(s.current.X-1, s.current.Y+1)) {
 			s.current.Y = s.current.Y + 1
 			s.current.X = s.current.X - 1
 			continue
 		}
 
 		// try right
-		if !s.graph.IsBlocked(*NewVector(s.current.X+1, s.current.Y)) &&
-			!s.graph.IsBlocked(*NewVector(s.current.X+1, s.current.Y+1)) {
+		// if !s.graph.IsBlocked(*NewVector(s.current.X+1, s.current.Y)) &&
+		if !s.graph.IsBlocked(*NewVector(s.current.X+1, s.current.Y+1)) {
 			s.current.Y = s.current.Y + 1
 			s.current.X = s.current.X + 1
 			continue

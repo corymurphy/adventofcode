@@ -16,7 +16,7 @@ func (g *Graph) IsBlocked(v Vector) bool {
 
 // TODO: i think this is too far
 func (g *Graph) IsOutOfBounds(v Vector) bool {
-	return v.Y < 0 || v.X < 0 || v.Y >= len(*g) || v.X >= len((*g)[v.Y])
+	return v.Y < 0 || v.X < 0 || v.Y >= len(*g)-1 || v.X >= len((*g)[v.Y])-1
 }
 
 func (g *Graph) SetSand(v Vector) {

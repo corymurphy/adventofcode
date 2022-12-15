@@ -26,34 +26,13 @@ func NewCave(input []string) *Cave {
 	}
 
 	cave.PlotRocks()
-	// fmt.Println(*limits)
-
-	// fmt.Println(cave.Rocks)
-
 	return cave
-}
-
-func (c *Cave) PlotRocks() {
-
-	for _, rock := range c.Rocks {
-		for i, v := range rock.Vectors {
-
-			(*c.Graph)[v.Y][v.X] = "#"
-
-			if i > 0 {
-				prev := rock.Vectors[i-1]
-				c.PlotRockLine(prev, v)
-			}
-
-		}
-	}
 }
 
 func (c *Cave) Draw() {
 
-	// fmt.Println(len(c.Graph))
-	// fmt.Println(len(c.Graph[0]))
 	for y := c.Limits.MinY(); y <= c.Limits.maxY; y++ {
+		// for y := c.Limits.MinY(); y <= 510; y++ {
 		fmt.Println("")
 		for x := c.Limits.MinX(); x <= c.Limits.maxX; x++ {
 			fmt.Printf("%s", (*c.Graph)[y][x])
@@ -62,30 +41,31 @@ func (c *Cave) Draw() {
 }
 
 func (c *Cave) InAbyss(v Vector) bool {
-	return c.Limits.maxY <= v.Y
+	return v.Y >= c.Limits.maxY
+	// return false
 }
 
 func (c *Cave) StartSand(start *Vector) int {
 	(*c.Graph)[start.Y][start.X] = "+"
 	c.Limits.Analyze([]*Vector{start})
-	// c.Draw()
 
+	fmt.Println(c.Limits.maxY)
 	last := NewVector(start.X, start.Y)
-	sands := 1
+	sands := 0
 	for !c.InAbyss(*last) {
-		// if sands > 1000 {
-		// 	break
-		// }
-		sands++
+
 		sand := NewSand(start, c.Graph)
 		sand.Drop()
+
 		last = NewVector(sand.finish.X, sand.finish.Y)
+		if c.InAbyss(*last) {
+			break
+		}
+		sands++
 	}
 
 	c.Draw()
 
-	fmt.Println(c.Limits.maxY)
-	// fmt.Println(sands)
 	return sands
 }
 
@@ -103,28 +83,66 @@ func NewGraph(limits *Limits) *Graph {
 	return &graph
 }
 
-func (c *Cave) PlotRockLine(start *Vector, finish *Vector) {
+func (c *Cave) PlotRocks() {
+
+	for _, rock := range c.Rocks {
+
+		for i, v := range rock.Vectors {
+
+			if i > 0 {
+				// prev :=
+				c.PlotRockLine(*rock.Vectors[i-1], *v)
+				// (*c.Graph)[prev.Y][prev.X] = "#"
+
+				// if v.Y == 66 {
+				// 	fmt.Println("here")
+				// }
+			}
+
+			// (*c.Graph)[v.Y][v.X] = "#"
+
+		}
+	}
+}
+
+func (c *Cave) PlotRockLine(start Vector, finish Vector) {
 
 	// you know what, this is bad, and I feel bad
 
 	// dif vertical
+
+	(*c.Graph)[start.Y][start.X] = "#"
+	(*c.Graph)[finish.Y][finish.X] = "#"
+
 	yDiff := start.Y - finish.Y
+
+	if start.Y > 65 && start.Y < 78 {
+		fmt.Printf("y diff %d\n", yDiff)
+	}
+
 	if yDiff != 0 {
 
-		if yDiff < 0 { // do down
+		if yDiff < 0 { // go down
 			for y := start.Y; y < finish.Y; y++ {
 				(*c.Graph)[y][start.X] = "#"
 			}
 		} else { // go up
-			for y := start.Y; y < finish.Y; y-- {
+			if start.X == 466 || start.X == 462 {
+				fmt.Println("here")
+			}
+			for y := start.Y; y > finish.Y; y-- {
 				(*c.Graph)[y][start.X] = "#"
 			}
 		}
 
 	}
 
-	// dif horizontal
 	xDiff := start.X - finish.X
+
+	if start.Y > 65 && start.Y < 78 {
+		fmt.Printf("x diff %d\n", xDiff)
+	}
+
 	if xDiff != 0 {
 		if xDiff < 0 { // go left
 			for x := start.X; x < finish.X; x++ {
@@ -137,11 +155,3 @@ func (c *Cave) PlotRockLine(start *Vector, finish *Vector) {
 		}
 	}
 }
-
-func isRock(input string) bool {
-	return input == "#"
-}
-
-// func isBlocked(input string) bool {
-
-// }
