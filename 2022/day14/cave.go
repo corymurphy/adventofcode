@@ -97,7 +97,7 @@ func (c *Cave) StartSand2(start *Vector) int {
 		// fmt.Println(sands)
 	}
 
-	// c.Draw()
+	c.Draw()
 
 	return sands
 }
