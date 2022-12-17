@@ -7,9 +7,15 @@ type Graph [][]string
 func NewGraph(sensors Sensors) *Graph {
 	graph := Graph{}
 
-	for y := 0; y <= sensors.Max()+sensors.Trim(); y++ {
+	trim := sensors.Trim()
+	max := sensors.Max()
+	min := sensors.Min()
+
+	fmt.Println(max + trim)
+	fmt.Println(min)
+	for y := min; y <= max+trim; y++ {
 		row := []string{}
-		for x := 0; x <= sensors.Max()+sensors.Trim(); x++ {
+		for x := min; x <= max+trim; x++ {
 			row = append(row, ".")
 		}
 		graph = append(graph, row)
@@ -41,28 +47,3 @@ func (g *Graph) PlotSensors(s Sensors) {
 		g.Set(sensor.Beacon.Y, sensor.Beacon.X, "B")
 	}
 }
-
-// func (c *Cave) Draw() {
-
-// 	for y := c.Limits.MinY(); y <= c.Limits.maxY+2; y++ {
-// 		// for y := c.Limits.MinY(); y <= 510; y++ {
-// 		fmt.Println("")
-// 		for x := c.Limits.MinX() - 10; x <= c.Limits.maxX+10; x++ {
-// 			fmt.Printf("%s", (*c.Graph)[y][x])
-// 		}
-// 	}
-// }
-
-// func NewGraph(limits *Limits) *Graph {
-
-// 	graph := Graph{}
-
-// 	for y := 0; y <= limits.maxY+2; y++ {
-// 		row := []string{}
-// 		for x := 0; x <= limits.maxX+10000; x++ {
-// 			row = append(row, ".")
-// 		}
-// 		graph = append((graph), row)
-// 	}
-// 	return &graph
-// }

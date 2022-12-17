@@ -30,20 +30,20 @@ func (s *Sensor) Area() []Coordinate {
 			area = append(area, c)
 		}
 
-		for i := 0; i <= delta; i++ {
-			c := NewCoordinates(i*-1, delta-i)
-			area = append(area, c)
-		}
+		// for i := 0; i <= delta; i++ {
+		// 	c := NewCoordinates(i*-1, delta-i)
+		// 	area = append(area, c)
+		// }
 
 		for i := 0; i <= delta; i++ {
 			c := NewCoordinates(i, (delta-i)*-1)
 			area = append(area, c)
 		}
 
-		for i := 0; i <= delta; i++ {
-			c := NewCoordinates(i*-1, (delta-i)*-1)
-			area = append(area, c)
-		}
+		// for i := 0; i <= delta; i++ {
+		// 	c := NewCoordinates(i*-1, (delta-i)*-1)
+		// 	area = append(area, c)
+		// }
 	}
 
 	return area

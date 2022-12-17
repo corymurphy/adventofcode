@@ -9,7 +9,7 @@ import (
 func Test_Part1(t *testing.T) {
 	expected := 26
 	input := shared.ReadInput("input_test")
-	actual := part1(input)
+	actual := NewCave(input).BeaconExclusionZones(10)
 	shared.AssertEqual(t, expected, actual)
 }
 
