@@ -33,17 +33,17 @@ func (q *Queue) Dequeue() (interface{}, error) {
 	return 0, fmt.Errorf("error: empty queue")
 }
 
-func (q *Queue) Peek() (interface{}, error) {
-	if q.queue.Len() > 0 {
+// func (q *Queue) Peek() (interface{}, error) {
+// 	if q.queue.Len() > 0 {
 
-		return q.queue.Front()
-		// if val, ok := q.queue.Front().Value.(int); ok {
-		// 	return val, nil
-		// }
-		// return 0, fmt.Errorf("error: datatype incorrect while peeking")
-	}
-	return 0, fmt.Errorf("error: empty queue")
-}
+// 		return q.queue.Front()
+// 		// if val, ok := q.queue.Front().Value.(int); ok {
+// 		// 	return val, nil
+// 		// }
+// 		// return 0, fmt.Errorf("error: datatype incorrect while peeking")
+// 	}
+// 	return 0, fmt.Errorf("error: empty queue")
+// }
 
 func (q *Queue) Size() int {
 	return q.queue.Len()
