@@ -81,7 +81,7 @@ func part1(input []string) (answer int) {
 
 	for _, row := range input {
 
-		for i, _ := range row {
+		for i := range row {
 
 			if i >= len(row)-5 {
 				continue
