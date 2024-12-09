@@ -29,11 +29,14 @@ type Free struct {
 }
 
 type Block struct {
+	// Length int
+	// Size
 	IsFree bool
 	Free   Free
 	File   File
 }
 
+type Files []File
 type Disk []Block
 
 func (d *Disk) ReIndex(limit int) {
@@ -51,9 +54,6 @@ func (d *Disk) ReIndex(limit int) {
 
 		size := 1
 		// freeIndex := 1
-
-		indexes := []int{}
-
 		for {
 
 			if i+size >= len((*d))-1 {
@@ -65,16 +65,10 @@ func (d *Disk) ReIndex(limit int) {
 			}
 
 			(*d)[i+size].Free.Start = i
-			indexes = append(indexes, i+size)
 
 			size++
 			// size++
 
-		}
-
-		for x := range indexes {
-			(*d)[x].Free.Start = i
-			(*d)[x].Free.Start = size
 		}
 
 		// for freeIndex := 1; freeIndex < len((*d))+freeIndex; freeIndex++ {
@@ -167,7 +161,9 @@ func (d *Disk) NeedsCompact() (fits bool) {
 func (d *Disk) Compact2() {
 
 	for i := 0; i < len(*d); i++ {
-		if !(*d)[i].IsFree {
+		block := (*d)[i]
+
+		if !block.IsFree {
 			continue
 		}
 
@@ -180,20 +176,11 @@ func (d *Disk) Compact2() {
 				continue
 			}
 
-			// if fileBlock.File.Id == 7 || fileBlock.File.Id == 1 {
-			// 	fmt.Println(fileBlock.File.Size)
-			// }
-
-			// if i == 4 {
-			// 	d.Print()
-			// 	fmt.Println(freeBlock)
-			// }
-
 			if freeBlock.Free.Size >= fileBlock.File.Size && !fileBlock.File.Moved {
 
 				for x := range fileBlock.File.Size {
 
-					if end-x <= i {
+					if end-x < i+x {
 						break
 					}
 
@@ -207,19 +194,39 @@ func (d *Disk) Compact2() {
 				}
 
 				d.ReIndex(i)
-				i = i + (*d)[i].Free.Size - 1
 
+				i = i + block.Free.Size
 				break
+			} else {
+				(*d)[end].File.Moved = true
 			}
 			(*d)[end].File.Moved = true
-		}
-		d.Print()
-	}
 
+		}
+	}
 }
 
-// 00992111777.44.333....5555.6666.....8888..
-// 00997771112....333.44.5555.6666.....8888..
+func (d *Disk) Files() (files Files) {
+
+	for i, block := range *d {
+
+		if block.IsFree {
+			continue
+		}
+
+		if block.File.Start == i {
+			files = append(files, block.File)
+		}
+	}
+	return files
+}
+
+func (f *Files) Print() {
+	fmt.Println()
+	for _, file := range *f {
+		fmt.Printf("id: %d, size: %d\n", file.Id, file.Size)
+	}
+}
 
 func (d *Disk) Print() {
 
@@ -236,6 +243,17 @@ func (d *Disk) Print() {
 }
 
 func (d *Disk) Checksum() (checksum int) {
+	for i, block := range *d {
+		if block.IsFree {
+			continue
+		}
+
+		checksum = checksum + (i * block.File.Id)
+	}
+	return checksum
+}
+
+func (d *Disk) Checksum2() (checksum int) {
 	for i, block := range *d {
 		if block.IsFree {
 			continue
@@ -327,7 +345,7 @@ func part2(input []string) (answer int) {
 
 	// disk.Compact2()
 
-	answer = disk.Checksum()
+	answer = disk.Checksum2()
 	// disk.Print()
 
 	// disk.Print()
