@@ -60,7 +60,7 @@ func TrailScore(trailMap TrailMap, start Coordinate, discovered *Discovered) {
 
 	// right
 	if len(trailMap[0]) > start.X+1 && trailMap[start.Y][start.X+1]-trailMap[start.Y][start.X] == 1 {
-		fmt.Print(trailMap[start.Y][start.X+1])
+		// fmt.Print(trailMap[start.Y][start.X+1])
 		if trailMap[start.Y][start.X+1] == 9 {
 			if !discovered.Contains(Coordinate{X: start.X + 1, Y: start.Y}) {
 				*discovered = append(*discovered, Coordinate{X: start.X + 1, Y: start.Y})
@@ -69,7 +69,7 @@ func TrailScore(trailMap TrailMap, start Coordinate, discovered *Discovered) {
 				// return 0
 				// fmt.Println()
 			}
-			fmt.Println()
+			// fmt.Println()
 		} else {
 			TrailScore(trailMap, Coordinate{X: start.X + 1, Y: start.Y}, discovered)
 		}
@@ -77,7 +77,7 @@ func TrailScore(trailMap TrailMap, start Coordinate, discovered *Discovered) {
 
 	// left
 	if start.X > 0 && trailMap[start.Y][start.X-1]-trailMap[start.Y][start.X] == 1 {
-		fmt.Print(trailMap[start.Y][start.X-1])
+		// fmt.Print(trailMap[start.Y][start.X-1])
 		if trailMap[start.Y][start.X-1] == 9 {
 			if !discovered.Contains(Coordinate{X: start.X - 1, Y: start.Y}) {
 				*discovered = append(*discovered, Coordinate{X: start.X - 1, Y: start.Y})
@@ -85,7 +85,7 @@ func TrailScore(trailMap TrailMap, start Coordinate, discovered *Discovered) {
 				// return 0
 
 			}
-			fmt.Println()
+			// fmt.Println()
 		} else {
 			TrailScore(trailMap, Coordinate{X: start.X - 1, Y: start.Y}, discovered)
 		}
@@ -94,7 +94,7 @@ func TrailScore(trailMap TrailMap, start Coordinate, discovered *Discovered) {
 	// up
 
 	if start.Y > 0 && trailMap[start.Y-1][start.X]-trailMap[start.Y][start.X] == 1 {
-		fmt.Print(trailMap[start.Y-1][start.X])
+		// fmt.Print(trailMap[start.Y-1][start.X])
 		if trailMap[start.Y-1][start.X] == 9 {
 			if !discovered.Contains(Coordinate{X: start.X, Y: start.Y - 1}) {
 				*discovered = append(*discovered, Coordinate{X: start.X, Y: start.Y - 1})
@@ -102,7 +102,7 @@ func TrailScore(trailMap TrailMap, start Coordinate, discovered *Discovered) {
 				// return 0
 				// fmt.Println()
 			}
-			fmt.Println()
+			// fmt.Println()
 		} else {
 			TrailScore(trailMap, Coordinate{X: start.X, Y: start.Y - 1}, discovered)
 		}
@@ -111,7 +111,7 @@ func TrailScore(trailMap TrailMap, start Coordinate, discovered *Discovered) {
 
 	// down
 	if len(trailMap) > start.Y+1 && trailMap[start.Y+1][start.X]-trailMap[start.Y][start.X] == 1 {
-		fmt.Print(trailMap[start.Y+1][start.X])
+		// fmt.Print(trailMap[start.Y+1][start.X])
 		if trailMap[start.Y+1][start.X] == 9 {
 
 			if !discovered.Contains(Coordinate{X: start.X, Y: start.Y + 1}) {
@@ -120,13 +120,12 @@ func TrailScore(trailMap TrailMap, start Coordinate, discovered *Discovered) {
 				// return 0
 				// fmt.Println()
 			}
-			fmt.Println()
+			// fmt.Println()
 		} else {
 			TrailScore(trailMap, Coordinate{X: start.X, Y: start.Y + 1}, discovered)
 		}
 
 	}
-	fmt.Println()
 
 	// return 0
 }
