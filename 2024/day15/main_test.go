@@ -28,7 +28,7 @@ func Test_Part1(t *testing.T) {
 }
 
 func Test_Part2_Sample(t *testing.T) {
-	expected := 0
+	expected := 9021
 	input := shared.ReadInput("input_sample")
 	actual := part2(input)
 	shared.AssertEqual(t, expected, actual)
