@@ -53,8 +53,8 @@ func part1(input []string) (answer int) {
 			fmt.Println(err)
 			return
 		}
-		aPressed := roundFloat(x.RawVector().Data[0], 13)
-		bPressed := roundFloat(x.RawVector().Data[1], 13)
+		aPressed := roundFloat(x.RawVector().Data[0], 2)
+		bPressed := roundFloat(x.RawVector().Data[1], 2)
 
 		if a["X"]*aPressed+b["X"]*bPressed != prize["X"] {
 			continue
