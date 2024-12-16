@@ -321,29 +321,53 @@ func (w *Warehouse) Move2(p Position, dir Direction, item rune) (next Position) 
 		w.Move2(next, dir, ']')
 	}
 
-	if (*w)[next.Y][next.X] == '[' && dir.Vertical() {
-		w.Move2(next, dir, '[')
-		w.Move2(Position{X: next.X + 1, Y: next.Y}, dir, ']')
+	if ((*w)[next.Y][next.X] == '[') && dir.Vertical() {
+		moved := w.Move2(next, dir, '[')
+
+		if moved.X == next.X && moved.Y == next.Y {
+			return p
+		}
+
+		if (*w)[next.Y][next.X] == '[' || (*w)[next.Y][next.X] == ']' {
+			return p
+		}
+
+		moved = w.Move2(Position{X: next.X + 1, Y: next.Y}, dir, ']')
+
+		if moved.X == next.X+1 && moved.Y == next.Y {
+			return p
+		}
+
+		if (*w)[next.Y][next.X+1] == '[' || (*w)[next.Y][next.X+1] == ']' {
+			return p
+		}
 	}
 
 	if (*w)[next.Y][next.X] == ']' && dir.Vertical() {
-		w.Move2(next, dir, ']')
-		w.Move2(Position{X: next.X - 1, Y: next.Y}, dir, '[')
+		moved := w.Move2(next, dir, ']')
+
+		if moved.X == next.X && moved.Y == next.Y {
+			return p
+		}
+
+		if (*w)[next.Y][next.X] == '[' || (*w)[next.Y][next.X] == ']' {
+			return p
+		}
+
+		moved = w.Move2(Position{X: next.X - 1, Y: next.Y}, dir, '[')
+
+		if moved.X == next.X-1 && moved.Y == next.Y {
+			return p
+		}
+
+		if (*w)[next.Y][next.X-1] == '[' || (*w)[next.Y][next.X-1] == ']' {
+			return p
+		}
 	}
 
 	if (*w)[next.Y][next.X] == '[' || (*w)[next.Y][next.X] == ']' {
 		return p
 	}
-
-	// if dir.Vertical() {
-	// 	// if (*w)[next.Y][next.X] == '[' || (*w)[next.Y][next.X+1] == ']' {
-	// 	// 	return p
-	// 	// }
-
-	// 	// if (*w)[next.Y][next.X] == ']' || (*w)[next.Y][next.X-1] == '[' {
-	// 	// 	return p
-	// 	// }
-	// }
 
 	(*w)[p.Y][p.X] = '.'
 	(*w)[next.Y][next.X] = item
@@ -362,8 +386,8 @@ func Simulate2(robot Position, w *Warehouse, d Directions) {
 		fmt.Printf("\033[%d;%dH%s", 2, 2, strconv.Itoa(x))
 		w.PrintSimulation()
 
-		if x > 185 {
-			time.Sleep(500 * time.Millisecond)
+		if x > 250 {
+			time.Sleep(3000 * time.Millisecond)
 		}
 
 	}
@@ -412,7 +436,7 @@ func part2(input []string) (answer int) {
 
 	d, w := Initialize2(input)
 	Simulate2(GetStart(&w), &w, d)
-	w.Print()
+	// w.Print()
 	answer = w.BoxGPS2()
 	return answer
 }
