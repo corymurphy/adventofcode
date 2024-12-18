@@ -62,19 +62,19 @@ func part1(input []string) (answer int) {
 		if opcode == 0 {
 
 			if operand >= 0 && operand <= 3 {
-				cpu.A = cpu.A / int(math.Pow(2, float64(operand)))
+				cpu.A = int(float64(cpu.A) / math.Pow(2, float64(operand)))
 			}
 
 			if operand == 4 {
-				cpu.A = cpu.A / int(math.Pow(2, float64(cpu.A)))
+				cpu.A = int(float64(cpu.A) / math.Pow(2, float64(cpu.A)))
 			}
 
 			if operand == 5 {
-				cpu.A = cpu.A / int(math.Pow(2, float64(cpu.B)))
+				cpu.A = int(float64(cpu.A) / math.Pow(2, float64(cpu.B)))
 			}
 
 			if operand == 6 {
-				cpu.A = cpu.A / int(math.Pow(2, float64(cpu.C)))
+				cpu.A = int(float64(cpu.A) / math.Pow(2, float64(cpu.C)))
 			}
 
 			if operand == 7 {
@@ -152,19 +152,19 @@ func part1(input []string) (answer int) {
 		// bdv
 		if opcode == 6 {
 			if operand >= 0 && operand <= 3 {
-				cpu.B = cpu.A / int(math.Pow(2, float64(operand)))
+				cpu.B = int(float64(cpu.A) / math.Pow(2, float64(operand)))
 			}
 
 			if operand == 4 {
-				cpu.B = cpu.A / int(math.Pow(2, float64(cpu.A)))
+				cpu.B = int(float64(cpu.A) / math.Pow(2, float64(cpu.A)))
 			}
 
 			if operand == 5 {
-				cpu.B = cpu.A / int(math.Pow(2, float64(cpu.B)))
+				cpu.B = int(float64(cpu.A) / math.Pow(2, float64(cpu.B)))
 			}
 
 			if operand == 6 {
-				cpu.B = cpu.A / int(math.Pow(2, float64(cpu.C)))
+				cpu.B = int(float64(cpu.A) / math.Pow(2, float64(cpu.C)))
 			}
 
 			if operand == 7 {
@@ -174,19 +174,19 @@ func part1(input []string) (answer int) {
 
 		if opcode == 7 {
 			if operand >= 0 && operand <= 3 {
-				cpu.C = cpu.A / int(math.Pow(2, float64(operand)))
+				cpu.C = int(float64(cpu.A) / math.Pow(2, float64(operand)))
 			}
 
 			if operand == 4 {
-				cpu.C = cpu.A / int(math.Pow(2, float64(cpu.A)))
+				cpu.C = int(float64(cpu.A) / math.Pow(2, float64(cpu.A)))
 			}
 
 			if operand == 5 {
-				cpu.C = cpu.A / int(math.Pow(2, float64(cpu.B)))
+				cpu.C = int(float64(cpu.A) / math.Pow(2, float64(cpu.B)))
 			}
 
 			if operand == 6 {
-				cpu.C = cpu.A / int(math.Pow(2, float64(cpu.C)))
+				cpu.C = int(float64(cpu.A) / math.Pow(2, float64(cpu.C)))
 			}
 
 			if operand == 7 {
@@ -201,13 +201,18 @@ func part1(input []string) (answer int) {
 
 	output := ""
 	for _, val := range cpu.Out {
-		output = fmt.Sprintf("%s%d", output, val)
+		output = fmt.Sprintf("%s,%d", output, val)
 	}
 
 	// fmt.Println(output)
 	// fmt.Println(ToInt(output))
+	// fmt.Println()
+
+	fmt.Println(output)
 
 	answer = ToInt(output)
+
+	// fmt.Println(cpu.Out)
 
 	return answer
 }
@@ -217,8 +222,14 @@ func ToInt(input string) int {
 	return int(value)
 }
 
+// func ToInt32(input string) int32 {
+// 	value, _ := strconv.ParseInt(input, 10, 32)
+// 	return int32(value)
+// }
+
 func part2(input []string) (answer int) {
 
+	// answer = 2024 ^ 43690
 	// fmt.Println(math.Pow(2, 4))
 	return answer
 }

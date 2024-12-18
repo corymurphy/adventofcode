@@ -7,14 +7,14 @@ import (
 )
 
 func Test_Part1_Sample(t *testing.T) {
-	expected := 4635635210
+	expected := 22
 	input := shared.ReadInput("input_sample")
 	actual := part1(input)
 	shared.AssertEqual(t, expected, actual)
 }
 
 func Test_Part1(t *testing.T) {
-	expected := 0 // 214074023 wrong
+	expected := 384
 	input := shared.ReadInput("input")
 	actual := part1(input)
 	shared.AssertEqual(t, expected, actual)
