@@ -47,7 +47,6 @@ type Route struct {
 	Position   Position
 	ReachedEnd bool
 	Score      int
-	// Visited    []Position
 }
 
 func NewSpace(input []string, bytes int) (space *Space) {
@@ -116,17 +115,7 @@ func (s *Space) Print() {
 	}
 }
 
-func main() {
-	input := shared.ReadInput("input")
-
-	part1 := part1(input)
-	part2 := part2(input)
-
-	fmt.Printf("\nPart 1 answer: %d\n\n", part1)
-	fmt.Printf("\nPart 2 answer: %d\n\n", part2)
-}
-
-func (s *Space) IsMoveValid(move Position, visited *map[Position]int) bool {
+func (s *Space) IsMoveValid(move Position) bool {
 	if move.Y < 0 || move.X < 0 {
 		return false
 	}
@@ -139,10 +128,6 @@ func (s *Space) IsMoveValid(move Position, visited *map[Position]int) bool {
 		return false
 	}
 
-	// if _, contains := (*visited)[move]; contains {
-	// 	return false
-	// }
-
 	if (*s)[move.Y][move.X] == '.' {
 		return true
 	}
@@ -153,39 +138,14 @@ func (s *Space) IsMoveValid(move Position, visited *map[Position]int) bool {
 func (s *Space) PrintSimulation() {
 	for y, row := range *s {
 		for x, val := range row {
-
-			// out := val
-			// out := val
-			// if val == 0 {
-			// 	out = "."
-			// }
-
-			// fmt.Printf("\033[%d;%dH%s", y+5, x+2, string(val))
 			fmt.Printf("\033[%d;%dH%s", y+5, x+2, string(val))
 		}
 	}
 	fmt.Println()
 }
 
-func part1(input []string) (answer int) {
-
-	space := NewSpace(input, 1024)
-	// space.Print()
-	// return 0
-
-	visted := map[Position]int{}
-
-	start := &Route{
-		Position: Position{X: 0, Y: 0},
-	}
-	end := Position{
-		X: len(*space) - 1,
-		Y: len(*space) - 1,
-	}
-
-	routes := []*Route{start}
-
-	// score := 0
+func Simulate(start *Route, end Position, space *Space) (routes []*Route) {
+	routes = []*Route{start}
 
 	queue := NewQueue()
 	queue.Enqueue(start)
@@ -204,7 +164,6 @@ func part1(input []string) (answer int) {
 			continue
 		}
 
-		// visted[route.Position] = 0
 		(*space)[route.Position.Y][route.Position.X] = 'O'
 
 		if end.X == route.Position.X && end.Y == route.Position.Y {
@@ -214,8 +173,6 @@ func part1(input []string) (answer int) {
 
 		route.Score++
 
-		// fmt.Println(len(routes))
-
 		for i, next := range []Position{
 			route.Position.Up(),
 			route.Position.Down(),
@@ -223,7 +180,7 @@ func part1(input []string) (answer int) {
 			route.Position.Right(),
 		} {
 
-			if !space.IsMoveValid(next, &visted) {
+			if !space.IsMoveValid(next) {
 				continue
 			}
 
@@ -242,6 +199,33 @@ func part1(input []string) (answer int) {
 		}
 	}
 
+	return routes
+}
+
+func main() {
+	input := shared.ReadInput("input_sample")
+
+	part1 := part1(input)
+	part2 := part2(input)
+
+	fmt.Printf("\nPart 1 answer: %d\n\n", part1)
+	fmt.Printf("\nPart 2 answer: %d\n\n", part2)
+}
+
+func part1(input []string) (answer int) {
+
+	space := NewSpace(input, 12)
+
+	start := &Route{
+		Position: Position{X: 0, Y: 0},
+	}
+	end := Position{
+		X: len(*space) - 1,
+		Y: len(*space) - 1,
+	}
+
+	routes := Simulate(start, end, space)
+
 	shortest := math.MaxInt
 	for _, route := range routes {
 		if !route.ReachedEnd {
@@ -254,12 +238,40 @@ func part1(input []string) (answer int) {
 
 	answer = shortest
 
-	space.Print()
-
 	return answer
 }
 
 func part2(input []string) (answer int) {
+
+	bytes := len(input)
+	exitable := false
+
+	for !exitable {
+		space := NewSpace(input, bytes)
+
+		bytes--
+
+		start := &Route{
+			Position: Position{X: 0, Y: 0},
+		}
+		end := Position{
+			X: len(*space) - 1,
+			Y: len(*space) - 1,
+		}
+
+		routes := Simulate(start, end, space)
+
+		for _, route := range routes {
+			if route.ReachedEnd {
+				exitable = true
+			}
+		}
+
+	}
+
+	fmt.Println(input[bytes+1])
+
+	answer = bytes
 
 	return answer
 }
