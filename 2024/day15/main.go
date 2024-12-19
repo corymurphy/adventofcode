@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"strconv"
-	"time"
 
 	shared "github.com/corymurphy/adventofcode/shared"
 )
@@ -322,11 +321,16 @@ func (w *Warehouse) Move2(p Position, dir Direction, item rune) (next Position) 
 	}
 
 	if ((*w)[next.Y][next.X] == '[') && dir.Vertical() {
-		moved := w.Move2(next, dir, '[')
 
-		if moved.X == next.X && moved.Y == next.Y {
+		if !w.CanMoveDown(next) {
 			return p
 		}
+
+		moved := w.Move2(next, dir, '[')
+
+		// if moved.X == next.X && moved.Y == next.Y {
+		// 	return p
+		// }
 
 		if (*w)[next.Y][next.X] == '[' || (*w)[next.Y][next.X] == ']' {
 			return p
@@ -344,6 +348,11 @@ func (w *Warehouse) Move2(p Position, dir Direction, item rune) (next Position) 
 	}
 
 	if (*w)[next.Y][next.X] == ']' && dir.Vertical() {
+
+		if dir == Down && !w.CanMoveDown(next) {
+			return p
+		}
+
 		moved := w.Move2(next, dir, ']')
 
 		if moved.X == next.X && moved.Y == next.Y {
@@ -376,6 +385,90 @@ func (w *Warehouse) Move2(p Position, dir Direction, item rune) (next Position) 
 
 }
 
+func (w *Warehouse) CanMoveDown(pos Position) bool {
+
+	item := (*w)[pos.Y][pos.X]
+
+	down0 := Position{X: pos.X, Y: pos.Y - 1}
+
+	if (*w)[down0.Y][down0.X] != '.' {
+		return false
+	}
+
+	if item == '[' {
+		down1 := Position{X: pos.X + 1, Y: pos.Y - 1}
+		down2 := Position{X: pos.X + 2, Y: pos.Y - 1}
+
+		if (*w)[down0.Y][down0.X] == '.' && (*w)[down1.Y][down1.X] == '.' {
+			return true
+		}
+
+		if w.CanMoveDown(down1) && w.CanMoveDown(down2) {
+			return true
+		}
+
+	}
+
+	if item == ']' {
+		down1 := Position{X: pos.X - 1, Y: pos.Y - 1}
+		down2 := Position{X: pos.X - 2, Y: pos.Y - 1}
+
+		if (*w)[down0.Y][down0.X] == '.' && (*w)[down1.Y][down1.X] == '.' {
+			return true
+		}
+
+		if w.CanMoveDown(down1) && w.CanMoveDown(down2) {
+			return true
+		}
+
+	}
+
+	return false
+
+}
+
+func (w *Warehouse) CanMoveUp(pos Position) bool {
+
+	item := (*w)[pos.Y][pos.X]
+
+	down0 := Position{X: pos.X, Y: pos.Y + 1}
+
+	if (*w)[down0.Y][down0.X] != '.' {
+		return false
+	}
+
+	if item == '[' {
+		down1 := Position{X: pos.X + 1, Y: pos.Y + 1}
+		down2 := Position{X: pos.X + 2, Y: pos.Y + 1}
+
+		if (*w)[down0.Y][down0.X] == '.' && (*w)[down1.Y][down1.X] == '.' {
+			return true
+		}
+
+		if w.CanMoveUp(down1) && w.CanMoveUp(down2) {
+			return true
+		}
+
+	}
+
+	if item == ']' {
+		down1 := Position{X: pos.X - 1, Y: pos.Y + 1}
+		down2 := Position{X: pos.X - 2, Y: pos.Y + 1}
+
+		if (*w)[down0.Y][down0.X] == '.' && (*w)[down1.Y][down1.X] == '.' {
+			return true
+		}
+
+		if w.CanMoveUp(down1) && w.CanMoveUp(down2) {
+			return true
+		}
+
+	}
+
+	return false
+
+}
+
 func Simulate2(robot Position, w *Warehouse, d Directions) {
 
 	// w.Print()
@@ -386,9 +479,10 @@ func Simulate2(robot Position, w *Warehouse, d Directions) {
 		fmt.Printf("\033[%d;%dH%s", 2, 2, strconv.Itoa(x))
 		w.PrintSimulation()
 
-		if x > 250 {
-			time.Sleep(3000 * time.Millisecond)
-		}
+		// if x > 250 {
+		// 	time.Sleep(250 * time.Millisecond)
+
+		// }
 
 	}
 
