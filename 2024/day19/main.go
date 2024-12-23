@@ -41,9 +41,9 @@ func part1(input []string) (answer int) {
 		// s := 0
 		endFit := false
 
-		for i := range 4 {
+		for i := range pmax {
 
-			di := 0
+			di := i
 			fit := false
 			// pmin := 1
 			retries := 0
@@ -75,6 +75,7 @@ func part1(input []string) (answer int) {
 
 				if fit {
 					continue
+
 				}
 
 				if retries > pmax || di <= 0 {
@@ -83,7 +84,10 @@ func part1(input []string) (answer int) {
 
 				retries++
 
-				di = di - i
+				di--
+
+				break
+
 			}
 		}
 

@@ -322,19 +322,23 @@ func (w *Warehouse) Move2(p Position, dir Direction, item rune) (next Position) 
 
 	if ((*w)[next.Y][next.X] == '[') && dir.Vertical() {
 
-		if !w.CanMoveDown(next) {
+		if !w.CanMoveDown(next) && dir == Down {
+			return p
+		}
+
+		if !w.CanMoveUp(next) && dir == Up {
 			return p
 		}
 
 		moved := w.Move2(next, dir, '[')
 
-		// if moved.X == next.X && moved.Y == next.Y {
-		// 	return p
-		// }
-
-		if (*w)[next.Y][next.X] == '[' || (*w)[next.Y][next.X] == ']' {
+		if moved.X == next.X && moved.Y == next.Y {
 			return p
 		}
+
+		// if (*w)[next.Y][next.X] == '[' || (*w)[next.Y][next.X] == ']' {
+		// 	return p
+		// }
 
 		moved = w.Move2(Position{X: next.X + 1, Y: next.Y}, dir, ']')
 
@@ -342,14 +346,18 @@ func (w *Warehouse) Move2(p Position, dir Direction, item rune) (next Position) 
 			return p
 		}
 
-		if (*w)[next.Y][next.X+1] == '[' || (*w)[next.Y][next.X+1] == ']' {
-			return p
-		}
+		// if (*w)[next.Y][next.X+1] == '[' || (*w)[next.Y][next.X+1] == ']' {
+		// 	return p
+		// }
 	}
 
 	if (*w)[next.Y][next.X] == ']' && dir.Vertical() {
 
-		if dir == Down && !w.CanMoveDown(next) {
+		if !w.CanMoveDown(next) && dir == Down {
+			return p
+		}
+
+		if !w.CanMoveUp(next) && dir == Up {
 			return p
 		}
 
@@ -359,9 +367,9 @@ func (w *Warehouse) Move2(p Position, dir Direction, item rune) (next Position) 
 			return p
 		}
 
-		if (*w)[next.Y][next.X] == '[' || (*w)[next.Y][next.X] == ']' {
-			return p
-		}
+		// if (*w)[next.Y][next.X] == '[' || (*w)[next.Y][next.X] == ']' {
+		// 	return p
+		// }
 
 		moved = w.Move2(Position{X: next.X - 1, Y: next.Y}, dir, '[')
 
@@ -369,9 +377,9 @@ func (w *Warehouse) Move2(p Position, dir Direction, item rune) (next Position) 
 			return p
 		}
 
-		if (*w)[next.Y][next.X-1] == '[' || (*w)[next.Y][next.X-1] == ']' {
-			return p
-		}
+		// if (*w)[next.Y][next.X-1] == '[' || (*w)[next.Y][next.X-1] == ']' {
+		// 	return p
+		// }
 	}
 
 	if (*w)[next.Y][next.X] == '[' || (*w)[next.Y][next.X] == ']' {
@@ -438,8 +446,8 @@ func (w *Warehouse) CanMoveUp(pos Position) bool {
 	}
 
 	if item == '[' {
-		down1 := Position{X: pos.X + 1, Y: pos.Y + 1}
-		down2 := Position{X: pos.X + 2, Y: pos.Y + 1}
+		down1 := Position{X: pos.X + 1, Y: pos.Y - 1}
+		down2 := Position{X: pos.X + 2, Y: pos.Y - 1}
 
 		if (*w)[down0.Y][down0.X] == '.' && (*w)[down1.Y][down1.X] == '.' {
 			return true
@@ -452,8 +460,8 @@ func (w *Warehouse) CanMoveUp(pos Position) bool {
 	}
 
 	if item == ']' {
-		down1 := Position{X: pos.X - 1, Y: pos.Y + 1}
-		down2 := Position{X: pos.X - 2, Y: pos.Y + 1}
+		down1 := Position{X: pos.X - 1, Y: pos.Y - 1}
+		down2 := Position{X: pos.X - 2, Y: pos.Y - 1}
 
 		if (*w)[down0.Y][down0.X] == '.' && (*w)[down1.Y][down1.X] == '.' {
 			return true

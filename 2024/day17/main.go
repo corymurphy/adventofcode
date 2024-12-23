@@ -222,11 +222,6 @@ func ToInt(input string) int {
 	return int(value)
 }
 
-// func ToInt32(input string) int32 {
-// 	value, _ := strconv.ParseInt(input, 10, 32)
-// 	return int32(value)
-// }
-
 func part2(input []string) (answer int) {
 
 	// answer = 2024 ^ 43690
