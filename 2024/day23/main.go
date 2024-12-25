@@ -25,41 +25,8 @@ type Connection struct {
 
 type Connections []string
 
-type Computer struct {
-	Id          string
-	Connections []*Computer
-}
-
-func GetConnections(input []string) (connections []Connection) {
-	connections = []Connection{}
-	for _, line := range input {
-		strings.Split(line, "-")
-
-		connections = append(connections, Connection{
-			A: strings.Split(line, "-")[0],
-			B: strings.Split(line, "-")[1],
-		})
-	}
-	return connections
-}
-
-func (s1 Connections) Contains(s2 Connections) (con Connections) {
-
-	con = Connections{}
-
-	for _, el1 := range s1 {
-		for _, el2 := range s2 {
-			if el1 == el2 {
-				con = append(con, el1)
-			}
-		}
-	}
-	return con
-}
-
-func part1(input []string) (answer int) {
-
-	network := map[string]Connections{}
+func GetNetwork(input []string) (network map[string]Connections) {
+	network = make(map[string]Connections)
 
 	for _, line := range input {
 
@@ -78,6 +45,26 @@ func part1(input []string) (answer int) {
 			network[b] = Connections{a}
 		}
 	}
+	return network
+}
+
+func (s1 Connections) Contains(s2 Connections) (con Connections) {
+
+	con = Connections{}
+
+	for _, el1 := range s1 {
+		for _, el2 := range s2 {
+			if el1 == el2 {
+				con = append(con, el1)
+			}
+		}
+	}
+	return con
+}
+
+func part1(input []string) (answer int) {
+
+	network := GetNetwork(input)
 
 	inter := make(map[string]int)
 
@@ -108,11 +95,10 @@ func part1(input []string) (answer int) {
 	return answer
 }
 
-type Connected struct {
-	Computers []string
-}
+// func FindConnected
 
 func part2(input []string) (answer int) {
+	// network := GetNetwork(input)
 
 	return answer
 }
