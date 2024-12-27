@@ -52,9 +52,20 @@ type Map []string
 
 type Region struct {
 	Id    Plot
-	Plots map[Position]int
-	// Edges int
-	Edges map[Position]int
+	Plots map[Position]bool
+	Edges map[Edge]bool
+}
+
+type Edge struct {
+	Position  Position
+	Direction Direction
+}
+
+func NewEdge(pos Position, dir Direction) (edge Edge) {
+	return Edge{
+		Position:  pos,
+		Direction: dir,
+	}
 }
 
 type Plot struct {
@@ -118,75 +129,129 @@ func (m *Map) Contains(pos Position) bool {
 	return true
 }
 
-func (r *Region) Add(pos Position) {
-	if val, contains := r.Plots[pos]; contains {
-		r.Plots[pos] = val + 1
-	} else {
-		r.Plots[pos] = 1
-	}
-}
+func DiscoverRegion(garden Map, pos Position, region *Region) {
 
-func (r *Region) Discovered(pos Position) bool {
-	_, contains := r.Plots[pos]
-	return contains
-}
-
-func DiscoverRegion(input Map, start Position, region *Region) {
-
-	if region.Id.Type != string(input[start.Y][start.X]) {
-		// region.Edges++
-		region.Edges[start] = region.Edges[start] + 1
+	if region.Plots[pos] {
 		return
 	}
+	region.Plots[pos] = true
 
-	if region.Discovered(start) {
-		return
+	for _, next := range []Edge{
+		NewEdge(pos.Move(Up, 1), Up),
+		NewEdge(pos.Move(Down, 1), Down),
+		NewEdge(pos.Move(Left, 1), Left),
+		NewEdge(pos.Move(Right, 1), Right),
+	} {
+		if !garden.Contains(next.Position) {
+			region.Edges[NewEdge(pos, next.Direction)] = true
+			continue
+		}
+
+		if region.Id.Type != string(garden[next.Position.Y][next.Position.X]) {
+			region.Edges[NewEdge(pos, next.Direction)] = true
+			continue
+		}
+
+		DiscoverRegion(garden, next.Position, region)
 	}
-
-	region.Add(start)
-
-	up := start.Move(Up, 1)
-	down := start.Move(Down, 1)
-	left := start.Move(Left, 1)
-	right := start.Move(Right, 1)
-
-	if input.Contains(up) {
-		DiscoverRegion(input, up, region)
-	} else {
-		// region.Edges++
-		region.Edges[start] = region.Edges[start] + 1
-
-	}
-
-	if input.Contains(down) {
-		DiscoverRegion(input, down, region)
-	} else {
-		// region.Edges++
-		region.Edges[start] = region.Edges[start] + 1
-	}
-
-	if input.Contains(left) {
-		DiscoverRegion(input, left, region)
-	} else {
-		// region.Edges++
-		region.Edges[start] = region.Edges[start] + 1
-	}
-
-	if input.Contains(right) {
-		DiscoverRegion(input, right, region)
-	} else {
-		region.Edges[start] = region.Edges[start] + 1
-	}
-
 }
 
 func (g *Garden) PerimeterCost() (cost int) {
 	for _, region := range g.Regions {
-		for _, edges := range region.Edges {
-			cost = cost + (edges * len(region.Plots))
-		}
+		cost = cost + (len(region.Edges) * len(region.Plots))
 	}
 	return cost
+}
+
+func (g *Garden) SideCost(r *Region) (cost int) {
+
+	// left
+	for y := 0; y < len(g.Map); y++ {
+		for x := 0; x < len(g.Map[y]); x++ {
+			if r.Edges[NewEdge(Position{X: x, Y: y}, Left)] && !r.Edges[NewEdge(Position{X: x, Y: y - 1}, Left)] {
+				cost++
+				x++
+				for ; x < len(g.Map[y]); x++ {
+					if (!r.Edges[NewEdge(Position{X: x, Y: y}, Left)] && !r.Edges[NewEdge(Position{X: x, Y: y - 1}, Left)]) {
+						break
+					}
+				}
+			}
+		}
+	}
+
+	// right
+	for y := len(g.Map) - 1; y >= 0; y-- {
+		for x := 0; x < len(g.Map[y]); x++ {
+			if r.Edges[NewEdge(Position{X: x, Y: y}, Right)] && !r.Edges[NewEdge(Position{X: x, Y: y + 1}, Right)] {
+				cost++
+				x++
+				for ; x < len(g.Map[y]); x++ {
+					if (!r.Edges[NewEdge(Position{X: x, Y: y}, Right)] && !r.Edges[NewEdge(Position{X: x, Y: y + 1}, Right)]) {
+						break
+					}
+				}
+			}
+		}
+	}
+
+	// up
+	for x := 0; x < len(g.Map[0]); x++ {
+		for y := 0; y < len(g.Map); y++ {
+			if r.Edges[NewEdge(Position{X: x, Y: y}, Up)] && !r.Edges[NewEdge(Position{X: x - 1, Y: y}, Up)] {
+				cost++
+				y++
+				for ; y < len(g.Map); y++ {
+					if (!r.Edges[NewEdge(Position{X: x, Y: y}, Up)] && !r.Edges[NewEdge(Position{X: x - 1, Y: y}, Up)]) {
+						break
+					}
+				}
+			}
+		}
+	}
+
+	// down
+	for x := len(g.Map[0]) - 1; x >= 0; x-- {
+		for y := 0; y < len(g.Map); y++ {
+			if r.Edges[NewEdge(Position{X: x, Y: y}, Down)] && !r.Edges[NewEdge(Position{X: x + 1, Y: y}, Down)] {
+				cost++
+				y++
+				for ; y < len(g.Map); y++ {
+					if (!r.Edges[NewEdge(Position{X: x, Y: y}, Down)] && !r.Edges[NewEdge(Position{X: x + 1, Y: y}, Down)]) {
+						break
+					}
+				}
+			}
+		}
+	}
+
+	return cost
+}
+
+func (g *Garden) Explore() {
+	for y, row := range g.Map {
+		for x := range row {
+
+			pos := Position{X: x, Y: y}
+
+			if g.IsRegionKnown(pos) {
+				continue
+			}
+
+			region := Region{
+				Plots: make(map[Position]bool),
+				Id: Plot{
+					Position: pos,
+					Type:     string(g.Map[pos.Y][pos.X]),
+				},
+				Edges: make(map[Edge]bool),
+			}
+
+			DiscoverRegion(g.Map, pos, &region)
+
+			g.Regions = append(g.Regions, region)
+		}
+	}
 }
 
 func part1(input []string) (answer int) {
@@ -194,30 +259,7 @@ func part1(input []string) (answer int) {
 	garden := Garden{
 		Map: input,
 	}
-
-	for y, row := range input {
-		for x := range row {
-
-			pos := Position{X: x, Y: y}
-
-			if garden.IsRegionKnown(pos) {
-				continue
-			}
-
-			region := Region{
-				Plots: make(map[Position]int),
-				Id: Plot{
-					Position: pos,
-					Type:     string(input[pos.Y][pos.X]),
-				},
-				Edges: make(map[Position]int),
-			}
-
-			DiscoverRegion(input, pos, &region)
-
-			garden.Regions = append(garden.Regions, region)
-		}
-	}
+	garden.Explore()
 
 	answer = garden.PerimeterCost()
 
@@ -229,34 +271,11 @@ func part2(input []string) (answer int) {
 	garden := Garden{
 		Map: input,
 	}
+	garden.Explore()
 
-	for y, row := range input {
-		for x := range row {
-
-			pos := Position{X: x, Y: y}
-
-			if garden.IsRegionKnown(pos) {
-				continue
-			}
-
-			region := Region{
-				Plots: make(map[Position]int),
-				Id: Plot{
-					Position: pos,
-					Type:     string(input[pos.Y][pos.X]),
-				},
-				Edges: make(map[Position]int),
-			}
-
-			DiscoverRegion(input, pos, &region)
-
-			garden.Regions = append(garden.Regions, region)
-		}
+	for _, region := range garden.Regions {
+		answer += garden.SideCost(&region) * len(region.Plots)
 	}
-
-	// for _, region := range garden.Regions {
-
-	// }
 
 	return answer
 }
