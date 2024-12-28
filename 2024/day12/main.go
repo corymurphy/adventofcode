@@ -61,6 +61,13 @@ type Edge struct {
 	Direction Direction
 }
 
+func NewEdgeXY(x, y int, dir Direction) (edge Edge) {
+	return Edge{
+		Position:  Position{X: x, Y: y},
+		Direction: dir,
+	}
+}
+
 func NewEdge(pos Position, dir Direction) (edge Edge) {
 	return Edge{
 		Position:  pos,
@@ -165,14 +172,14 @@ func (g *Garden) PerimeterCost() (cost int) {
 
 func (g *Garden) SideCost(r *Region) (cost int) {
 
-	// left
 	for y := 0; y < len(g.Map); y++ {
 		for x := 0; x < len(g.Map[y]); x++ {
-			if r.Edges[NewEdge(Position{X: x, Y: y}, Left)] && !r.Edges[NewEdge(Position{X: x, Y: y - 1}, Left)] {
+
+			if r.Edges[NewEdgeXY(x, y, Up)] {
 				cost++
 				x++
 				for ; x < len(g.Map[y]); x++ {
-					if (!r.Edges[NewEdge(Position{X: x, Y: y}, Left)] && !r.Edges[NewEdge(Position{X: x, Y: y - 1}, Left)]) {
+					if !r.Edges[NewEdgeXY(x, y, Up)] {
 						break
 					}
 				}
@@ -180,14 +187,14 @@ func (g *Garden) SideCost(r *Region) (cost int) {
 		}
 	}
 
-	// right
-	for y := len(g.Map) - 1; y >= 0; y-- {
+	for y := 0; y < len(g.Map); y++ {
 		for x := 0; x < len(g.Map[y]); x++ {
-			if r.Edges[NewEdge(Position{X: x, Y: y}, Right)] && !r.Edges[NewEdge(Position{X: x, Y: y + 1}, Right)] {
+
+			if r.Edges[NewEdgeXY(x, y, Down)] {
 				cost++
 				x++
 				for ; x < len(g.Map[y]); x++ {
-					if (!r.Edges[NewEdge(Position{X: x, Y: y}, Right)] && !r.Edges[NewEdge(Position{X: x, Y: y + 1}, Right)]) {
+					if !r.Edges[NewEdgeXY(x, y, Down)] {
 						break
 					}
 				}
@@ -195,14 +202,13 @@ func (g *Garden) SideCost(r *Region) (cost int) {
 		}
 	}
 
-	// up
 	for x := 0; x < len(g.Map[0]); x++ {
 		for y := 0; y < len(g.Map); y++ {
-			if r.Edges[NewEdge(Position{X: x, Y: y}, Up)] && !r.Edges[NewEdge(Position{X: x - 1, Y: y}, Up)] {
+			if r.Edges[NewEdgeXY(x, y, Left)] {
 				cost++
 				y++
 				for ; y < len(g.Map); y++ {
-					if (!r.Edges[NewEdge(Position{X: x, Y: y}, Up)] && !r.Edges[NewEdge(Position{X: x - 1, Y: y}, Up)]) {
+					if !r.Edges[NewEdgeXY(x, y, Left)] {
 						break
 					}
 				}
@@ -210,14 +216,13 @@ func (g *Garden) SideCost(r *Region) (cost int) {
 		}
 	}
 
-	// down
-	for x := len(g.Map[0]) - 1; x >= 0; x-- {
+	for x := 0; x < len(g.Map[0]); x++ {
 		for y := 0; y < len(g.Map); y++ {
-			if r.Edges[NewEdge(Position{X: x, Y: y}, Down)] && !r.Edges[NewEdge(Position{X: x + 1, Y: y}, Down)] {
+			if r.Edges[NewEdgeXY(x, y, Right)] {
 				cost++
 				y++
 				for ; y < len(g.Map); y++ {
-					if (!r.Edges[NewEdge(Position{X: x, Y: y}, Down)] && !r.Edges[NewEdge(Position{X: x + 1, Y: y}, Down)]) {
+					if !r.Edges[NewEdgeXY(x, y, Right)] {
 						break
 					}
 				}

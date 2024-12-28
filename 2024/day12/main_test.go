@@ -63,7 +63,7 @@ func Test_Part2_SampleSmall(t *testing.T) {
 }
 
 func Test_Part2(t *testing.T) {
-	expected := 0 // 575843, 809794 too low
+	expected := 811148
 	input := shared.ReadInput("input")
 	actual := part2(input)
 	shared.AssertEqual(t, expected, actual)
