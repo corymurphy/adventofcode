@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 
 	shared "github.com/corymurphy/adventofcode/shared"
 )
@@ -291,21 +290,12 @@ func (w *Warehouse) Move(p Position, dir Direction, item rune) (next Position) {
 }
 
 func Simulate(robot Position, w *Warehouse, d Directions) {
-
 	for _, dir := range d {
-
 		robot = w.Move(robot, dir, '@')
-
-		// w.PrintSimulation()
-		// time.Sleep(250 * time.Millisecond)
 	}
-
-	// w.PrintSimulation()
 }
 
 func (w *Warehouse) Move2(p Position, dir Direction, item rune) (next Position) {
-	// is position in warehosue?
-
 	next = p.Move(dir)
 
 	if (*w)[next.Y][next.X] == '#' {
@@ -320,66 +310,33 @@ func (w *Warehouse) Move2(p Position, dir Direction, item rune) (next Position) 
 		w.Move2(next, dir, ']')
 	}
 
-	if ((*w)[next.Y][next.X] == '[') && dir.Vertical() {
-
-		if !w.CanMoveDown(next) && dir == Down {
-			return p
+	if dir == Down && (*w)[next.Y][next.X] == ']' {
+		if w.CanMoveDown(next) && w.CanMoveDown(Position{X: next.X - 1, Y: next.Y}) {
+			w.Move2(next, dir, ']')
+			w.Move2(Position{X: next.X - 1, Y: next.Y}, dir, '[')
 		}
-
-		if !w.CanMoveUp(next) && dir == Up {
-			return p
-		}
-
-		moved := w.Move2(next, dir, '[')
-
-		if moved.X == next.X && moved.Y == next.Y {
-			return p
-		}
-
-		// if (*w)[next.Y][next.X] == '[' || (*w)[next.Y][next.X] == ']' {
-		// 	return p
-		// }
-
-		moved = w.Move2(Position{X: next.X + 1, Y: next.Y}, dir, ']')
-
-		if moved.X == next.X+1 && moved.Y == next.Y {
-			return p
-		}
-
-		// if (*w)[next.Y][next.X+1] == '[' || (*w)[next.Y][next.X+1] == ']' {
-		// 	return p
-		// }
 	}
 
-	if (*w)[next.Y][next.X] == ']' && dir.Vertical() {
+	if dir == Down && (*w)[next.Y][next.X] == '[' {
+		if w.CanMoveDown(next) && w.CanMoveDown(Position{X: next.X + 1, Y: next.Y}) {
+			w.Move2(next, dir, '[')
+			w.Move2(Position{X: next.X + 1, Y: next.Y}, dir, ']')
+		}
+	}
 
-		if !w.CanMoveDown(next) && dir == Down {
-			return p
+	if dir == Up && (*w)[next.Y][next.X] == ']' {
+		if w.CanMoveUp(next) && w.CanMoveUp(Position{X: next.X - 1, Y: next.Y}) {
+			w.Move2(next, dir, ']')
+			w.Move2(Position{X: next.X - 1, Y: next.Y}, dir, '[')
 		}
 
-		if !w.CanMoveUp(next) && dir == Up {
-			return p
+	}
+
+	if dir == Up && (*w)[next.Y][next.X] == '[' {
+		if w.CanMoveUp(next) && w.CanMoveUp(Position{X: next.X + 1, Y: next.Y}) {
+			w.Move2(next, dir, '[')
+			w.Move2(Position{X: next.X + 1, Y: next.Y}, dir, ']')
 		}
-
-		moved := w.Move2(next, dir, ']')
-
-		if moved.X == next.X && moved.Y == next.Y {
-			return p
-		}
-
-		// if (*w)[next.Y][next.X] == '[' || (*w)[next.Y][next.X] == ']' {
-		// 	return p
-		// }
-
-		moved = w.Move2(Position{X: next.X - 1, Y: next.Y}, dir, '[')
-
-		if moved.X == next.X-1 && moved.Y == next.Y {
-			return p
-		}
-
-		// if (*w)[next.Y][next.X-1] == '[' || (*w)[next.Y][next.X-1] == ']' {
-		// 	return p
-		// }
 	}
 
 	if (*w)[next.Y][next.X] == '[' || (*w)[next.Y][next.X] == ']' {
@@ -397,35 +354,37 @@ func (w *Warehouse) CanMoveDown(pos Position) bool {
 
 	item := (*w)[pos.Y][pos.X]
 
-	down0 := Position{X: pos.X, Y: pos.Y - 1}
+	if item == '.' {
+		return true
+	}
 
-	if (*w)[down0.Y][down0.X] != '.' {
+	down0 := Position{X: pos.X, Y: pos.Y + 1}
+
+	if (*w)[down0.Y][down0.X] == '#' {
 		return false
 	}
 
 	if item == '[' {
-		down1 := Position{X: pos.X + 1, Y: pos.Y - 1}
-		down2 := Position{X: pos.X + 2, Y: pos.Y - 1}
+		down1 := Position{X: pos.X + 1, Y: pos.Y + 1}
 
 		if (*w)[down0.Y][down0.X] == '.' && (*w)[down1.Y][down1.X] == '.' {
 			return true
 		}
 
-		if w.CanMoveDown(down1) && w.CanMoveDown(down2) {
+		if w.CanMoveDown(down0) && w.CanMoveDown(down1) {
 			return true
 		}
 
 	}
 
 	if item == ']' {
-		down1 := Position{X: pos.X - 1, Y: pos.Y - 1}
-		down2 := Position{X: pos.X - 2, Y: pos.Y - 1}
+		down1 := Position{X: pos.X - 1, Y: pos.Y + 1}
 
 		if (*w)[down0.Y][down0.X] == '.' && (*w)[down1.Y][down1.X] == '.' {
 			return true
 		}
 
-		if w.CanMoveDown(down1) && w.CanMoveDown(down2) {
+		if w.CanMoveDown(down0) && w.CanMoveDown(down1) {
 			return true
 		}
 
@@ -439,35 +398,37 @@ func (w *Warehouse) CanMoveUp(pos Position) bool {
 
 	item := (*w)[pos.Y][pos.X]
 
-	down0 := Position{X: pos.X, Y: pos.Y + 1}
+	if item == '.' {
+		return true
+	}
 
-	if (*w)[down0.Y][down0.X] != '.' {
+	up0 := Position{X: pos.X, Y: pos.Y - 1}
+
+	if (*w)[up0.Y][up0.X] == '#' {
 		return false
 	}
 
 	if item == '[' {
-		down1 := Position{X: pos.X + 1, Y: pos.Y - 1}
-		down2 := Position{X: pos.X + 2, Y: pos.Y - 1}
+		up1 := Position{X: pos.X + 1, Y: pos.Y - 1}
 
-		if (*w)[down0.Y][down0.X] == '.' && (*w)[down1.Y][down1.X] == '.' {
+		if (*w)[up0.Y][up0.X] == '.' && (*w)[up1.Y][up1.X] == '.' {
 			return true
 		}
 
-		if w.CanMoveUp(down1) && w.CanMoveUp(down2) {
+		if w.CanMoveUp(up0) && w.CanMoveUp(up1) {
 			return true
 		}
 
 	}
 
 	if item == ']' {
-		down1 := Position{X: pos.X - 1, Y: pos.Y - 1}
-		down2 := Position{X: pos.X - 2, Y: pos.Y - 1}
+		up1 := Position{X: pos.X - 1, Y: pos.Y - 1}
 
-		if (*w)[down0.Y][down0.X] == '.' && (*w)[down1.Y][down1.X] == '.' {
+		if (*w)[up0.Y][up0.X] == '.' && (*w)[up1.Y][up1.X] == '.' {
 			return true
 		}
 
-		if w.CanMoveUp(down1) && w.CanMoveUp(down2) {
+		if w.CanMoveUp(up0) && w.CanMoveUp(up1) {
 			return true
 		}
 
@@ -479,22 +440,17 @@ func (w *Warehouse) CanMoveUp(pos Position) bool {
 
 func Simulate2(robot Position, w *Warehouse, d Directions) {
 
-	// w.Print()
-	for x, dir := range d {
+	for _, dir := range d {
 
 		robot = w.Move2(robot, dir, '@')
 
-		fmt.Printf("\033[%d;%dH%s", 2, 2, strconv.Itoa(x))
-		w.PrintSimulation()
+		// fmt.Printf("\033[%d;%dH%s    %s   ", 2, 2, strconv.Itoa(x), dir)
+		// w.PrintSimulation()
+		// fmt.Println()
+		// fmt.Println()
 
-		// if x > 250 {
-		// 	time.Sleep(250 * time.Millisecond)
-
-		// }
-
+		// time.Sleep(250 * time.Millisecond)
 	}
-
-	// w.PrintSimulation()
 }
 
 func (w *Warehouse) BoxGPS() (answer int) {
@@ -510,24 +466,19 @@ func (w *Warehouse) BoxGPS() (answer int) {
 
 func (w *Warehouse) BoxGPS2() (answer int) {
 	for y, row := range *w {
-
-		for x := 0; x < len(row); x = x + 2 {
-			if row[x] == '[' || row[x] == ']' {
-				answer = answer + ((y * 100) + x)
+		for x := 0; x < len(row); {
+			if row[x] != '[' {
+				x++
+				continue
 			}
-
+			answer = answer + ((y * 100) + x)
+			x += 2
 		}
-		// for x, val := range row {
-		// 	if val == '[' {
-		// 		answer = answer + ((y * 100) + x)
-		// 	}
-		// }
 	}
 	return answer
 }
 
 func part1(input []string) (answer int) {
-
 	d, w := Initialize(input)
 	Simulate(GetStart(&w), &w, d)
 	answer = w.BoxGPS()
@@ -535,10 +486,8 @@ func part1(input []string) (answer int) {
 }
 
 func part2(input []string) (answer int) {
-
 	d, w := Initialize2(input)
 	Simulate2(GetStart(&w), &w, d)
-	// w.Print()
 	answer = w.BoxGPS2()
 	return answer
 }
