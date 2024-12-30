@@ -19,12 +19,12 @@ func Test_Part1_Sample2(t *testing.T) {
 	shared.AssertEqual(t, expected, actual)
 }
 
-// func Test_Part1(t *testing.T) {
-// 	expected := 92432
-// 	input := shared.ReadInput("input")
-// 	actual := part1(input)
-// 	shared.AssertEqual(t, expected, actual)
-// }
+func Test_Part1(t *testing.T) {
+	expected := 92432
+	input := shared.ReadInput("input")
+	actual := part1(input)
+	shared.AssertEqual(t, expected, actual)
+}
 
 func Test_Part2_Sample(t *testing.T) {
 	expected := 45
@@ -40,9 +40,9 @@ func Test_Part2_Sample2(t *testing.T) {
 	shared.AssertEqual(t, expected, actual)
 }
 
-// func Test_Part2(t *testing.T) {
-// 	expected := 0
-// 	input := shared.ReadInput("input")
-// 	actual := part2(input)
-// 	shared.AssertEqual(t, expected, actual)
-// }
+func Test_Part2(t *testing.T) {
+	expected := 458
+	input := shared.ReadInput("input")
+	actual := part2(input)
+	shared.AssertEqual(t, expected, actual)
+}

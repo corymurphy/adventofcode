@@ -5,8 +5,6 @@ import (
 	"math"
 
 	"github.com/corymurphy/adventofcode/shared"
-
-	"github.com/google/uuid"
 )
 
 type Maze [][]rune
@@ -16,8 +14,7 @@ type Route struct {
 	ReachedEnd bool
 	Score      int
 	Visited    []Position
-	Id         string
-	SourceId   string
+	// Id         string
 }
 
 type Position struct {
@@ -99,21 +96,11 @@ func (g *Game) IsMoveValid(move Position, cost int) bool {
 		return false
 	}
 
-	// , contains := g.VisitedFrom[move]
-
-	// if contains {
-	// 	return false
-	// }
-
 	for _, v := range g.Visited {
 		if v.Position.X == move.X && v.Position.Y == move.Y && v.Position.Direction == move.Direction && v.Cost <= cost {
 			return false
 		}
 	}
-
-	// if g.Maze[move.Y][move.X] == '#' {
-	// 	return false
-	// }
 
 	if g.Maze[move.Y][move.X] == '.' || g.Maze[move.Y][move.X] == 'E' {
 		return true
@@ -208,24 +195,18 @@ func (g *Game) ExploreBfs() {
 		current := Route{
 			Score:    route.Score,
 			Position: Position{X: route.Position.X, Y: route.Position.Y, Direction: route.Position.Direction},
-			// Visited:  route.Visited,
-			Id:       route.Id,
-			SourceId: route.SourceId,
+			Visited:  make([]Position, len(route.Visited)),
 		}
 
-		// fmt.Println(copy(current.Visited, route.Visited))
+		copy(current.Visited, route.Visited)
 
 		next := g.Next(route.Position, route.Position.Direction)
 		if g.IsMoveValid(next, current.Score) {
 			paths++
 			route.Score++
 
-			// route.V[route.Position] = 0
-
 			if g.Maze[next.Y][next.X] == 'E' {
 				route.ReachedEnd = true
-				// route.Visited = append(route.Visited, next)
-
 				continue
 			} else {
 
@@ -254,18 +235,10 @@ func (g *Game) ExploreBfs() {
 				forked := &Route{
 					Position: current.Position,
 					Score:    current.Score + 1000,
-					// Visited:  route.Visited,
-					Id:       uuid.New().String(),
-					SourceId: current.Id,
-					// Visited:
-					// V:        current.V,
+					Visited:  make([]Position, len(current.Visited)),
 				}
 
-				fmt.Println(len(route.Visited))
-
-				// fmt.Println(copy(forked.Visited, route.Visited))
-
-				// copy(forked.Visited, current.Visited)
+				copy(forked.Visited, current.Visited)
 
 				g.Routes = append(g.Routes, forked)
 
@@ -278,8 +251,7 @@ func (g *Game) ExploreBfs() {
 }
 
 func (g *Game) Compete() {
-
-	route := Route{Position: g.Start, Visited: []Position{g.Start}, Id: "1"}
+	route := Route{Position: g.Start, Visited: []Position{g.Start}}
 	g.Routes = []*Route{&route}
 	g.ExploreBfs()
 }
@@ -303,15 +275,6 @@ func part1(input []string) (answer int) {
 	return answer
 }
 
-func (g *Game) Source(id string) Route {
-	for _, source := range g.Routes {
-		if source.Id == id {
-			return *source
-		}
-	}
-	return Route{Id: "0", Visited: []Position{}}
-}
-
 func part2(input []string) (answer int) {
 	game := NewGame(input)
 
@@ -329,47 +292,11 @@ func part2(input []string) (answer int) {
 
 	var winning map[Position]int = make(map[Position]int)
 	for _, route := range game.Routes {
-		// fmt.Println(route.SourceId)
 		if route.ReachedEnd && route.Score == cheapest {
-
-			// fmt.Println(route.SourceId)
-
-			// fmt.Println(len(route.Visited))
-
 			for _, pos := range route.Visited {
 				pos.Direction = Unknown
 				winning[pos] = 0
 			}
-
-			// sid := route.SourceId
-
-			// source := game.Source(route.SourceId)
-			// sid := source.SourceId
-
-			// for sid != "0" && sid != "" {
-
-			// 	source = game.Source(sid)
-			// 	sid = source.SourceId
-
-			// 	for _, pos := range source.Visited {
-			// 		pos.Direction = Unknown
-			// 		winning[pos] = 0
-			// 	}
-
-			// }
-
-			// for _, pos := range game.Source(route).Visited {
-			// 	pos.Direction = Unknown
-			// 	winning[pos] = 0
-			// }
-
-			// fmt.Println(game.Source(route))
-
-			// for {
-
-			// }
-
-			// fmt.Println(route)
 		}
 	}
 
@@ -379,7 +306,7 @@ func part2(input []string) (answer int) {
 
 	game.Maze.Print()
 
-	answer = len(winning)
+	answer = len(winning) + 1
 
 	return answer
 }
