@@ -35,21 +35,7 @@ func NewComputer(input []string) (computer Computer) {
 	return computer
 }
 
-func main() {
-	input := shared.ReadInput("input_sample")
-
-	part1 := part1(input)
-	part2 := part2(input)
-
-	fmt.Printf("\nPart 1 answer: %d\n\n", part1)
-	fmt.Printf("\nPart 2 answer: %d\n\n", part2)
-}
-
-func part1(input []string) (answer int) {
-
-	cpu := NewComputer(input)
-	// fmt.Println(cpu)
-
+func (cpu *Computer) Run() {
 	for cpu.Counter < len(cpu.Program) {
 		opcode := cpu.Program[cpu.Counter]
 		operand := cpu.Program[cpu.Counter+1]
@@ -196,23 +182,171 @@ func part1(input []string) (answer int) {
 
 		cpu.Counter += 2
 	}
+}
 
-	// fmt.Println(cpu.Out)
+func (cpu *Computer) Run2() {
+	for cpu.Counter < len(cpu.Program) {
+		opcode := cpu.Program[cpu.Counter]
+		operand := cpu.Program[cpu.Counter+1]
 
-	output := ""
-	for _, val := range cpu.Out {
-		output = fmt.Sprintf("%s,%d", output, val)
+		// fmt.Println("opcode:", opcode, ";", "operand:", operand)
+
+		// yep we're going it this way for now stay mad
+
+		// adv
+		if opcode == 0 {
+
+			if operand >= 0 && operand <= 3 {
+				cpu.A = int(float64(cpu.A) / math.Pow(2, float64(operand)))
+			}
+
+			if operand == 4 {
+				cpu.A = int(float64(cpu.A) / math.Pow(2, float64(cpu.A)))
+			}
+
+			if operand == 5 {
+				cpu.A = int(float64(cpu.A) / math.Pow(2, float64(cpu.B)))
+			}
+
+			if operand == 6 {
+				cpu.A = int(float64(cpu.A) / math.Pow(2, float64(cpu.C)))
+			}
+		}
+
+		// bxl
+		if opcode == 1 {
+			cpu.B = cpu.B ^ operand
+		}
+
+		// bst
+		if opcode == 2 {
+			if operand >= 0 && operand <= 3 {
+				cpu.B = operand % 8
+			}
+
+			if operand == 4 {
+				cpu.B = cpu.A % 8
+			}
+
+			if operand == 5 {
+				cpu.B = cpu.B % 8
+			}
+
+			if operand == 6 {
+				cpu.B = cpu.C % 8
+			}
+
+		}
+
+		// jnz
+		if opcode == 3 {
+			if cpu.A != 0 {
+				cpu.Counter = operand
+				continue
+			}
+		}
+
+		// bxc
+		if opcode == 4 {
+			cpu.B = cpu.B ^ cpu.C
+		}
+
+		// out
+		if opcode == 5 {
+			result := 0
+			if operand >= 0 && operand <= 3 {
+				result = operand % 8
+			}
+
+			if operand == 4 {
+				result = cpu.A % 8
+			}
+
+			if operand == 5 {
+				result = cpu.B % 8
+			}
+
+			if operand == 6 {
+				result = cpu.C % 8
+			}
+
+			if operand == 7 {
+				panic("reserved")
+			}
+
+			if result != cpu.Program[len(cpu.Out)] {
+				return
+			}
+
+			cpu.Out = append(cpu.Out, result)
+
+			// sl[len(sl)-1]
+
+		}
+
+		// bdv
+		if opcode == 6 {
+			if operand >= 0 && operand <= 3 {
+				cpu.B = int(float64(cpu.A) / math.Pow(2, float64(operand)))
+			}
+
+			if operand == 4 {
+				cpu.B = int(float64(cpu.A) / math.Pow(2, float64(cpu.A)))
+			}
+
+			if operand == 5 {
+				cpu.B = int(float64(cpu.A) / math.Pow(2, float64(cpu.B)))
+			}
+
+			if operand == 6 {
+				cpu.B = int(float64(cpu.A) / math.Pow(2, float64(cpu.C)))
+			}
+
+			if operand == 7 {
+				panic("reserved")
+			}
+		}
+
+		if opcode == 7 {
+			if operand >= 0 && operand <= 3 {
+				cpu.C = int(float64(cpu.A) / math.Pow(2, float64(operand)))
+			}
+
+			if operand == 4 {
+				cpu.C = int(float64(cpu.A) / math.Pow(2, float64(cpu.A)))
+			}
+
+			if operand == 5 {
+				cpu.C = int(float64(cpu.A) / math.Pow(2, float64(cpu.B)))
+			}
+
+			if operand == 6 {
+				cpu.C = int(float64(cpu.A) / math.Pow(2, float64(cpu.C)))
+			}
+
+			if operand == 7 {
+				panic("reserved")
+			}
+		}
+
+		cpu.Counter += 2
 	}
+}
 
-	// fmt.Println(output)
-	// fmt.Println(ToInt(output))
-	// fmt.Println()
+func main() {
+	// part1 := part1(shared.ReadInput("input_sample"))
+	part2 := part2(shared.ReadInput("input"))
 
-	fmt.Println(output)
+	// fmt.Printf("\nPart 1 answer: %s\n\n", part1)
+	fmt.Printf("\nPart 2 answer: %d\n\n", part2)
+}
 
-	answer = ToInt(output)
+func part1(input []string) (answer string) {
 
-	// fmt.Println(cpu.Out)
+	cpu := NewComputer(input)
+	cpu.Run()
+
+	answer = cpu.OutString()
 
 	return answer
 }
@@ -222,9 +356,55 @@ func ToInt(input string) int {
 	return int(value)
 }
 
+func (cpu *Computer) OutString() (output string) {
+	output = strconv.Itoa(cpu.Out[0])
+	for _, val := range cpu.Out[1:] {
+		output = fmt.Sprintf("%s,%d", output, val)
+	}
+	return output
+}
+
+func (cpu *Computer) Reset(a int) {
+	cpu.A = a
+	cpu.B = 0
+	cpu.C = 0
+	cpu.Counter = 0
+	cpu.Out = []int{}
+}
+
+func (cpu *Computer) ProgramEqualsOut() bool {
+
+	if len(cpu.Program) != len(cpu.Out) {
+		return false
+	}
+
+	for i, prog := range cpu.Program {
+		if cpu.Out[i] != prog {
+			return false
+		}
+	}
+	return true
+}
+
 func part2(input []string) (answer int) {
 
-	// answer = 2024 ^ 43690
-	// fmt.Println(math.Pow(2, 4))
+	cpu := NewComputer(input)
+
+	// 37826000000
+	for a := 37826000000; ; a++ {
+
+		cpu.Reset(a)
+		cpu.Run2()
+
+		// if a%10000000 == 0 {
+		// 	fmt.Println(a)
+		// }
+
+		if cpu.ProgramEqualsOut() {
+			answer = a
+			break
+		}
+	}
+
 	return answer
 }
