@@ -58,20 +58,8 @@ func part2(inputs []string) (answer int) {
 
 	padLock := NewPadLock(50)
 	for _, rotation := range rotations {
-		before := padLock.WasZero
 		padLock.Rotate2(rotation)
-
-		fmt.Println(padLock.Position, padLock.WasZero-before)
-
 	}
-
-	// fmt.Println(50 / 100)
-	// fmt.Println(170 / 100 * 100)
-	// fmt.Println(170 - 100)
-	// fmt.Println(50 + 70)
-	// fmt.Println()
-	// fmt.Println(1000 - 0)
-
 	answer = padLock.WasZero
 	return answer
 }
@@ -122,9 +110,6 @@ func (p *PadLock) Rotate2(r Rotation) {
 		if n == 100 {
 			n = n - 100
 		}
-		// if n == 0 {
-		// 	p.WasZero = p.WasZero + 1
-		// }
 	}
 
 	if r.Direction == Left {
@@ -134,19 +119,10 @@ func (p *PadLock) Rotate2(r Rotation) {
 
 		if n < 0 {
 			n = n + 100
-
 			if initial != 0 {
 				p.WasZero = p.WasZero + 1
 			}
-
 		}
-
-		// if n == 0 && initial != 0 {
-		// 	p.WasZero = p.WasZero + 1
-		// }
-		// if n == 0 {
-		// 	n = n + 100
-		// }
 	}
 
 	if n == 0 {
